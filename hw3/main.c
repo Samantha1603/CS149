@@ -22,7 +22,7 @@ void print_seats();
 int main(){
 
 	//Initilization of variables
-	int seed = 0;
+	int seed = time(NULL);
 	srand(seed);
 	start = false;
 	seat_map = malloc(TOTAL_SEATS * (sizeof(char) * 3)); //100 seats can store 3 each seat
@@ -32,9 +32,9 @@ int main(){
 	seller* l_sellers = malloc(sizeof(seller) * NUM_OF_L_SELLERS);//create l_sellers
 	filled_seats = 0;
 
-	//Setting logs and threads
-	seat_access = PTHREAD_MUTEX_INITIALIZER;
-	cond = PTHREAD_COND_INITIALIZER;
+	//Setting and threads
+	seat_access = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
+	cond = (pthread_cond_t) PTHREAD_COND_INITIALIZER;
 	pthread_t h_seller_thread;
 	pthread_t m_sellers_thread[10];
 	pthread_t l_sellers_thread[10];

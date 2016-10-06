@@ -18,27 +18,23 @@ void print_sellers(seller* list, int length){
 void* sell_seats(void* seat_seller){
 	int current_customer = 0;
 	while(!start) pthread_cond_wait(&cond, &seat_access);
+	pthread_mutex_unlock(&seat_access);
 	seller* seat_seller_s = (seller*) seat_seller;
 	while(filled_seats < TOTAL_SEATS){
-	// add check for customer arrival before trying lock
-	printf("in");
-	while(1){
+		// add check for customer arrival before trying lock
 		pthread_mutex_lock(&seat_access);
-		if(pthread_mutex_trylock(&seat_access) == 0) break;
-	}
-	for(int x = 0; x < (TOTAL_SEATS * 3); x += 3){
-		//buy a seat
-		if(*(seat_map + x) == (char) 45){
-			*(seat_map + x) = (*seat_seller_s).name[0];
-			*(seat_map + x + 1) = (*seat_seller_s).name[1];
-			*(seat_map + x + 2) = (*seat_seller_s).name[2];
-			current_customer++;
-			break;
+		for(int x = 0; x < (TOTAL_SEATS * 3); x += 3){
+			//buy a seat
+			if(*(seat_map + x) == (char) 45){
+				*(seat_map + x) = (*seat_seller_s).name[0];
+				*(seat_map + x + 1) = (*seat_seller_s).name[1];
+				*(seat_map + x + 2) = (*seat_seller_s).name[2];
+				current_customer++;
+				break;
+			}
 		}
-	}
-	filled_seats++;
-	printf("out");
-	pthread_mutex_unlock(&seat_access);
+		filled_seats++;
+		pthread_mutex_unlock(&seat_access);
 	}
 	pthread_exit(NULL);
 }

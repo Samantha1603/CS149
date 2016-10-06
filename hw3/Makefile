@@ -8,7 +8,10 @@ LDFLAGS=-lpthreadGC2
 makeHW3:	main.o	seller.o	customer.o 	algorithms.o
 	$(CC)	$(CFLAGS)	-o	main main.o	seller.o	algorithms.o 	customer.o	$(LDFLAGS)
 else
- echo add something
+CFLAGS=-I$(HDIR)	-std=c99	-g
+LDFLAGS=-lpthread
+makeHW3:	main.o	seller.o	algorithms.o	customer.o	
+	$(CC)	$(CFLAGS) $(LDFLAGS)	-o	main	main.o	seller.o	algorithms.o	customer.o 	$(LDFLAGS)
 endif
 clean:
 	rm	-f	*.o	main makeHW3	*.exe
