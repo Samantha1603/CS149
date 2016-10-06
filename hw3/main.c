@@ -7,8 +7,8 @@
 #include "algorithms.h"
 
 #define NUM_OF_H_SELLERS 1
-#define NUM_OF_M_SELLERS 10
-#define NUM_OF_L_SELLERS 10
+#define NUM_OF_M_SELLERS 3
+#define NUM_OF_L_SELLERS 6
 
 void wake_up(){
 	pthread_mutex_lock(&seat_access);
