@@ -3,12 +3,21 @@
 #include "pthread.h"
 #include <stdbool.h>
 
-#define TOTAL_SEATS 100
+///Total Number of seats that can be sold
+#define TOTAL_SEATS 100	
 
-pthread_mutex_t seat_access;
+/// Restricts access to seats
+pthread_mutex_t seat_access; 
+
 pthread_cond_t cond;
-int filled_seats;
-char* seat_map; //inc 0, 3, 6, 9 due to 3 chars being stored per seat
-bool start;
+
+///Counts how many seats are filled - semaphore
+int filled_seats; 
+
+///Actual map of location of seats - inc 0, 3, 6, 9 due to 3 chars being stored per seat
+char* seat_map; 
+
+///When to start selling
+bool start; 
 
 #endif
