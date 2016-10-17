@@ -8,7 +8,7 @@ struct customer{
 	// Time of arrival to seller
 	int arrival_time; 
 	// Customer ID
-	char customer_id;
+	char customer_id[2];
 };
 
 typedef struct customer customer;
