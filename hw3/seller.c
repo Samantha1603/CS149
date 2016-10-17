@@ -50,7 +50,6 @@ void* sell_seats(void* seat_seller){
 
 			// Sell seat starting with row 10 and work towards the front
 			for(int x = 396; x > 0; x -= 4){
-
 				if(*(seat_map + x) == (char) 45){ // (char) 45 = '-'
 					totalL_sold++; // Add to L sold count
 
@@ -78,7 +77,6 @@ void* sell_seats(void* seat_seller){
 
 			printf("\nCustomer %c%c of Seller %c%c being served\n", currentCustomer[0], currentCustomer[1], (*seat_seller_s).name[0], 
 				(*seat_seller_s).name[1]);
-
 			sleep((rand() % 3) + 2); // Sell for 2,3 or 4 minutes
 
 			// Sell seat starting with row 5 then 6 then 4 then 7
@@ -122,7 +120,6 @@ void* sell_seats(void* seat_seller){
 			printf("\nCustomer %c%c of Seller %c%c being served\n", currentCustomer[0], currentCustomer[1], (*seat_seller_s).name[0], 
 				(*seat_seller_s).name[1]);
 			sleep((rand() % 1) + 1); // Sell for 1 or 2 minutes
-
 			// Sell seat starting with row 1 then worl towards the front
 			for(int x = 0; x < (TOTAL_SEATS * 4); x += 4){
 				if(*(seat_map + x) == (char) 45){
