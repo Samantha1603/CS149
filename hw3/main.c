@@ -24,7 +24,7 @@ void wake_up(){
 	pthread_mutex_unlock(&seat_access);
 }
 
-void print_seats();
+//void print_seats();
 
 int main(){
 	//Initilization of variables
@@ -44,8 +44,8 @@ int main(){
     printf("Timer- %1d:%02d\n", (int) (sec / 60), (int) sec % 60);
 
 
-	seat_map = malloc(TOTAL_SEATS * (sizeof(char) * 3)); //100 seats can store 3 each seat
-	memset(seat_map, 45, TOTAL_SEATS * (sizeof(char) * 3));
+	seat_map = malloc(TOTAL_SEATS * (sizeof(char) * 4)); //100 seats can store 4 each seat
+	memset(seat_map, 45, TOTAL_SEATS * (sizeof(char) * 4));
 	seller* h_sellers = malloc(sizeof(seller) * NUM_OF_H_SELLERS);//create h_sellers
 	seller* m_sellers = malloc(sizeof(seller) * NUM_OF_M_SELLERS);//create m_sellers
 	seller* l_sellers = malloc(sizeof(seller) * NUM_OF_L_SELLERS);//create l_sellers
@@ -195,10 +195,11 @@ int main(){
 
 	return 0;
 }
-
+/* deprecated
 void print_seats(){
-	for(int x = 0; x < (TOTAL_SEATS * 3); x += 3){
-		printf("|%c%c%c| ", seat_map[x], seat_map[x + 1], seat_map[x + 2]);
-		if(x % 30 == 0 && x > 0) printf("\n");
+	for(int x = 0; x < (TOTAL_SEATS * 4); x += 4){
+		printf("|%c%c%c%c| ", seat_map[x], seat_map[x + 1], seat_map[x + 2], seat_map[x + 3]);
+		if(x % 40 == 0 && x > 0) printf("\n");
 	}
 }
+*/
