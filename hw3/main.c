@@ -31,7 +31,9 @@ int main(){
 	int seed = time(NULL);
 	srand(seed);
 	start = false;
-
+	m_t_sold = 0;
+	l_t_sold = 0;
+	h_t_sold = 0;
 	// Set timer
     sellerTimer.it_value.tv_sec = MAX_MINUTES;
     setitimer(ITIMER_REAL, &sellerTimer, NULL);
@@ -192,6 +194,8 @@ int main(){
 	}
 	//print_seats();
 	printf("\n----------------FINISHED------------------------\n");
+
+	printf("\nTotal H tickets sold: %d Total M tickets sold: %d Total L tickets sold: %d\n", h_t_sold, m_t_sold, l_t_sold);
 
 	return 0;
 }
