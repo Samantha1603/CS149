@@ -53,7 +53,7 @@ void* sell_seats(void* seat_seller){
 			// L seller
 
 			printf("\nCustomer %c%c being served\n", currentCustomer[0], currentCustomer[1]);
-			sleep((rand() % 1) + 1); // Sell for 1 or 2 minutes
+			sleep((rand() % 4) + 4); // Sell for 4,5,6 or 7 minutes
 
 			// Sell seat starting with row 10 and work towards the front
 			for(int x = 396; x > 0; x -= 4){
@@ -69,6 +69,7 @@ void* sell_seats(void* seat_seller){
 					//TODO: ADD SLOT FOR CUSTOMER
 					*(seat_map + x + 2) = currentCustomer[0];
 					*(seat_map + x + 3) = currentCustomer[1];
+					l_t_sold++;
 					print_seat();
 
 					printf("\nCustomer %c%c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer[0], currentCustomer[1],
@@ -100,6 +101,7 @@ void* sell_seats(void* seat_seller){
 					*(seat_map + startingIndex + 2) = currentCustomer[0];
 					*(seat_map + startingIndex + 3) = currentCustomer[1];
 					seatNotSold = 0; // Seat now sold
+					m_t_sold++;
 					print_seat();
 
 					printf("\nCustomer %c%c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer[0], currentCustomer[1],
@@ -120,8 +122,7 @@ void* sell_seats(void* seat_seller){
 			// H Seller sales_price = 3
 
 			printf("\nCustomer %c%c being served\n", currentCustomer[0], currentCustomer[1]);
-			sleep((rand() % 4) + 4); // Sell for 4,5,6 or 7 minutes
-
+			sleep((rand() % 1) + 1); // Sell for 1 or 2 minutes
 			// Sell seat starting with row 1 then worl towards the front
 			for(int x = 0; x < (TOTAL_SEATS * 4); x += 4){
 				if(*(seat_map + x) == (char) 45){
@@ -133,6 +134,7 @@ void* sell_seats(void* seat_seller){
 					*(seat_map + x + 1) = (*seat_seller_s).name[1];
 					*(seat_map + x + 2) = currentCustomer[0];
 					*(seat_map + x + 3) = currentCustomer[1];
+					h_t_sold++;
 					print_seat();
 
 					printf("\nCustomer %c%c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer[0], currentCustomer[1],
