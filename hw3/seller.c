@@ -56,7 +56,7 @@ void* sell_seats(void* seat_seller){
 			sleep((rand() % 1) + 1); // Sell for 1 or 2 minutes
 
 			// Sell seat starting with row 10 and work towards the front
-			for(int x = 297; x > 0; x -= 3){
+			for(int x = 396; x > 0; x -= 4){
 				if(*(seat_map + x) == (char) 45){ // (char) 45 = '-'
 					//printf("Customer L%d%02d is now being served", min / 60, min % 60, id % 10, count + 1);
 
@@ -67,7 +67,8 @@ void* sell_seats(void* seat_seller){
 					*(seat_map + x) = (*seat_seller_s).name[0];
 					*(seat_map + x + 1) = (*seat_seller_s).name[1];
 					//TODO: ADD SLOT FOR CUSTOMER
-					*(seat_map + x + 2) = currentCustomer[1];
+					*(seat_map + x + 2) = currentCustomer[0];
+					*(seat_map + x + 3) = currentCustomer[1];
 					print_seat();
 
 					printf("\nCustomer %c%c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer[0], currentCustomer[1],
@@ -84,7 +85,7 @@ void* sell_seats(void* seat_seller){
 			sleep((rand() % 3) + 2); // Sell for 2,3 or 4 minutes
 
 			// Sell seat starting with row 5 then 6 then 4 then 7
-			int startingIndex = 120;
+			int startingIndex = 160;
 			int seatNotSold = 1;
 
 			do {
@@ -96,20 +97,21 @@ void* sell_seats(void* seat_seller){
 					
 					*(seat_map + startingIndex) = (*seat_seller_s).name[0];
 					*(seat_map + startingIndex + 1) = (*seat_seller_s).name[1];
-					*(seat_map + startingIndex + 2) = currentCustomer[1];
+					*(seat_map + startingIndex + 2) = currentCustomer[0];
+					*(seat_map + startingIndex + 3) = currentCustomer[1];
 					seatNotSold = 0; // Seat now sold
 					print_seat();
 
 					printf("\nCustomer %c%c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer[0], currentCustomer[1],
 						(*seat_seller_s).name[0], (*seat_seller_s).name[1], aftertime / 60, aftertime % 60);
 				}
-				startingIndex += 3; // Increment by 3 in index
+				startingIndex += 4; // Increment by 3 in index
 
 				// Switching for 5->6->4->7 only
-				if (startingIndex == 180) { // Hit 7 after end of 6, go back to row 4
-					startingIndex = 90; // Index of row 4
-				} else if (startingIndex == 120) { // Hit row 5 after end of 4, go to row 7
-					startingIndex = 180;
+				if (startingIndex == 220) { // Hit 7 after end of 6, go back to row 4
+					startingIndex = 130; // Index of row 4
+				} else if (startingIndex == 160) { // Hit row 5 after end of 4, go to row 7
+					startingIndex = 220;
 				}
 
 			} while (seatNotSold);
@@ -121,7 +123,7 @@ void* sell_seats(void* seat_seller){
 			sleep((rand() % 4) + 4); // Sell for 4,5,6 or 7 minutes
 
 			// Sell seat starting with row 1 then worl towards the front
-			for(int x = 0; x < (TOTAL_SEATS * 3); x += 3){
+			for(int x = 0; x < (TOTAL_SEATS * 4); x += 4){
 				if(*(seat_map + x) == (char) 45){
 					time_t after;
                     time(&after);
@@ -129,7 +131,8 @@ void* sell_seats(void* seat_seller){
 
             		*(seat_map + x) = (*seat_seller_s).name[0];
 					*(seat_map + x + 1) = (*seat_seller_s).name[1];
-					*(seat_map + x + 2) = currentCustomer[1];
+					*(seat_map + x + 2) = currentCustomer[0];
+					*(seat_map + x + 3) = currentCustomer[1];
 					print_seat();
 
 					printf("\nCustomer %c%c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer[0], currentCustomer[1],
@@ -149,10 +152,10 @@ void* sell_seats(void* seat_seller){
 
 void print_seat(){
 	printf("\n\n");
-	for(int x = 0; x < (TOTAL_SEATS * 3); x += 3){
-		printf("|%c%c%c| ", seat_map[x], seat_map[x + 1], seat_map[x + 2]);
-		if (x == 27 || x == 57 || x == 87 || x == 117 || x == 147 || x == 177 ||
-			x == 207 || x == 237 || x == 267) {
+	for(int x = 0; x < (TOTAL_SEATS * 4); x += 4){
+		printf("|%c%c%c%c| ", seat_map[x], seat_map[x + 1], seat_map[x + 2], seat_map[x + 3]);
+		if (x == 36 || x == 76 || x == 116 || x == 156 || x == 196 || x == 236 ||
+			x == 276 || x == 316 || x == 356) {
 			printf("\n");
 		}
 	}
