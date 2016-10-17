@@ -30,6 +30,8 @@ void print_sellers(seller* list, int length);
  */
 void* sell_seats(void* seat_seller);
 
-void print_seat();
-
+/**
+ * print_seats() prints the seat slots
+ */
+void print_seats();
 #endif

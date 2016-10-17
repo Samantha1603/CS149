@@ -1,14 +1,12 @@
 #ifndef CUSTOMER
 #define CUSTOMER
 
-///number of customers for each queue
-#define NUM_OF_CUSTOMERS 10
 
 struct customer{
 	// Time of arrival to seller
 	int arrival_time; 
 	// Customer ID
-	char customer_id;
+	char customer_id[2];
 };
 
 typedef struct customer customer;
@@ -26,5 +24,7 @@ void make_customers(customer** queue, int length);
  * @param length length of list
  */
 void print_customers(customer* list, int length);
+
+int NUM_OF_CUSTOMERS; // Total number of customers
 
 #endif

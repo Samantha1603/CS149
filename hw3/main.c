@@ -24,15 +24,29 @@ void wake_up(){
 	pthread_mutex_unlock(&seat_access);
 }
 
-void print_seats();
+void timerHandler();
 
-int main(){
+int main(int argc, char *argv[]){
+
+	if(argc < 2) {
+        NUM_OF_CUSTOMERS = 5; // default customer size
+        printf("\nNo N Given. Using default size N = 5\n\n");
+    } else {
+        NUM_OF_CUSTOMERS= atoi(argv[1]);
+        printf("\nNumber of customers : %d\n\n", NUM_OF_CUSTOMERS);
+    }
+
+	// Initilize total sell counts for L, M and H sellers
+	totalL_sold = 0;
+	totalM_sold = 0;
+	totalH_sold = 0;
+
 	//Initilization of variables
 	int seed = time(NULL);
 	srand(seed);
 	start = false;
 
-	// Set timer
+	// Set timer to exit at 60 minutes
     sellerTimer.it_value.tv_sec = MAX_MINUTES;
     setitimer(ITIMER_REAL, &sellerTimer, NULL);
     time(&startTime);
@@ -40,12 +54,9 @@ int main(){
 	time_t currentTime; // type calender time
     time(&currentTime);
     int sec = (int) difftime(currentTime, startTime);
-   
-    printf("Timer- %1d:%02d\n", (int) (sec / 60), (int) sec % 60);
 
-
-	seat_map = malloc(TOTAL_SEATS * (sizeof(char) * 3)); //100 seats can store 3 each seat
-	memset(seat_map, 45, TOTAL_SEATS * (sizeof(char) * 3));
+	seat_map = malloc(TOTAL_SEATS * (sizeof(char) * 4)); //100 seats can store 4 each seat
+ 	memset(seat_map, 45, TOTAL_SEATS * (sizeof(char) * 4));
 	seller* h_sellers = malloc(sizeof(seller) * NUM_OF_H_SELLERS);//create h_sellers
 	seller* m_sellers = malloc(sizeof(seller) * NUM_OF_M_SELLERS);//create m_sellers
 	seller* l_sellers = malloc(sizeof(seller) * NUM_OF_L_SELLERS);//create l_sellers
@@ -55,8 +66,8 @@ int main(){
 	seat_access = (pthread_mutex_t) PTHREAD_MUTEX_INITIALIZER;
 	cond = (pthread_cond_t) PTHREAD_COND_INITIALIZER;
 	pthread_t h_seller_thread;
-	pthread_t m_sellers_thread[10]; 
-	pthread_t l_sellers_thread[10]; 
+	pthread_t m_sellers_thread[3]; 
+	pthread_t l_sellers_thread[6]; 
 
 	//For the future broadcast call to restart threads
 
@@ -66,13 +77,11 @@ int main(){
 		if(x < 10){
 			h_sellers[x].name[0] = 'H'; 
 			h_sellers[x].name[1] = (char) (x + '0'); // seller id
-			//h_sellers[x].name[1] = (char) 48;
 			h_sellers[x].name[2] = (char) (x + 48);
 		}
 		else{
 			h_sellers[x].name[0] = 'H';
 			h_sellers[x].name[1] = (char) (x + '0');
-			//h_sellers[x].name[1] = '1';
 			h_sellers[x].name[2] = '2';
 		}
 		make_customers(&(h_sellers[x].start_queue), NUM_OF_CUSTOMERS);
@@ -85,13 +94,11 @@ int main(){
 		if(x < 10){
 			m_sellers[x].name[0] = 'M';
 			m_sellers[x].name[1] = (char) (x + '0');
-			//m_sellers[x].name[1] = (char) 48;
 			m_sellers[x].name[2] = (char) (x + 48);
 		}
 		else{
 			m_sellers[x].name[0] = 'M';
 			m_sellers[x].name[1] = (char) (x + '0');
-			//m_sellers[x].name[1] = '1';
 			m_sellers[x].name[2] = '2';
 		}
 		make_customers(&(m_sellers[x].start_queue), NUM_OF_CUSTOMERS);
@@ -104,13 +111,11 @@ int main(){
 		if(x < 10){
 			l_sellers[x].name[0] = 'L'; 
 			l_sellers[x].name[1] = x + '0';
-			//l_sellers[x].name[1] = (char) 48;
 			l_sellers[x].name[2] = (char) (x + 48);
 		}
 		else{
 			l_sellers[x].name[0] = 'L';
 			l_sellers[x].name[1] = x + '0';
-			//l_sellers[x].name[1] = '1';
 			l_sellers[x].name[2] = '2';
 		}
 		make_customers(&(l_sellers[x].start_queue), NUM_OF_CUSTOMERS);
@@ -119,33 +124,23 @@ int main(){
 
 
 	printf("\n----------------QUEUE H seller-------------------------------\n");
-	//print_customers(h_sellers[0].start_queue, NUM_OF_CUSTOMERS);
 	sort(h_sellers[0].start_queue, &h_sellers[0].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
-	//printf("\n-----------------------------after sort------------------\n");
 	print_customers(h_sellers[0].start_queue, NUM_OF_CUSTOMERS);
 
 	printf("\n----------------QUEUE FIRST M seller-------------------------------\n");
-	//print_customers(m_sellers[0].start_queue, NUM_OF_CUSTOMERS);
 	sort(m_sellers[0].start_queue, &m_sellers[0].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
-	//printf("\n-----------------------------after sort------------------\n");
 	print_customers(m_sellers[0].start_queue, NUM_OF_CUSTOMERS);
 
 	printf("\n----------------QUEUE SECOND M seller-------------------------------\n");
-	//print_customers(m_sellers[1].start_queue, NUM_OF_CUSTOMERS);
 	sort(m_sellers[1].start_queue, &m_sellers[1].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
-	//printf("\n-----------------------------after sort------------------\n");
 	print_customers(m_sellers[1].start_queue, NUM_OF_CUSTOMERS);
 
 	printf("\n----------------QUEUE THIRD M seller-------------------------------\n");
-	//print_customers(m_sellers[2].start_queue, NUM_OF_CUSTOMERS);
 	sort(m_sellers[2].start_queue, &m_sellers[2].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
-	//printf("\n-----------------------------after sort------------------\n");
 	print_customers(m_sellers[2].start_queue, NUM_OF_CUSTOMERS);
 
 	printf("\n----------------QUEUE FIRST L seller-------------------------------\n");
-	//print_customers(l_sellers[0].start_queue, NUM_OF_CUSTOMERS);
 	sort(l_sellers[0].start_queue, &l_sellers[0].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
-	//printf("\n-----------------------------after sort------------------\n");
 	print_customers(l_sellers[0].start_queue, NUM_OF_CUSTOMERS);
 
 	printf("\n----------------QUEUE SECOND L seller-------------------------------\n");
@@ -168,6 +163,8 @@ int main(){
 	sort(l_sellers[5].start_queue, &l_sellers[5].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
 	print_customers(l_sellers[5].start_queue, NUM_OF_CUSTOMERS);
 
+    printf("\n\nTimer- %1d:%02d\n", (int) (sec / 60), (int) sec % 60); // Print initial time stamp
+
 	// Create seller M threads
 	for(int x = 0; x < NUM_OF_M_SELLERS; x++){ 
 		// arguments(structure, NULL, function that runs in thread, argument to sell_seats function)
@@ -181,6 +178,7 @@ int main(){
 	pthread_create(&h_seller_thread, NULL, sell_seats, h_sellers);
 
 	wake_up();
+    signal(SIGALRM, timerHandler); // Set signal to listen for when time hits 60 seconds, then call timerHandler function
 
 	//join all threads
 	pthread_join(h_seller_thread, NULL);
@@ -190,15 +188,21 @@ int main(){
 	for(int x = 0; x < NUM_OF_M_SELLERS; x++){
 		pthread_join(m_sellers_thread[x], NULL);
 	}
-	//print_seats();
-	printf("\n----------------FINISHED------------------------\n");
-
 	return 0;
 }
 
-void print_seats(){
-	for(int x = 0; x < (TOTAL_SEATS * 3); x += 3){
-		printf("|%c%c%c| ", seat_map[x], seat_map[x + 1], seat_map[x + 2]);
-		if(x % 30 == 0 && x > 0) printf("\n");
-	}
+void timerHandler(int signal){
+
+	int totalCustomers = (NUM_OF_CUSTOMERS * NUM_OF_L_SELLERS) + 
+						 (NUM_OF_CUSTOMERS * NUM_OF_M_SELLERS) + 
+						 (NUM_OF_CUSTOMERS * NUM_OF_H_SELLERS);
+
+	printf("\nTotal seats sold: %d", filled_seats);
+	printf("\nTotal L seats sold: %d", totalL_sold);
+	printf("\nTotal M seats sold: %d", totalM_sold);
+	printf("\nTotal H seats sold: %d", totalH_sold);
+	printf("\nTotal customers turned away: %d", totalCustomers - totalL_sold + totalM_sold + totalH_sold);
+	printf("\n");
+	exit(0); // Program finishes
 }
+
