@@ -5,8 +5,10 @@
 #define NUM_OF_CUSTOMERS 10
 
 struct customer{
-	///// Time of arrival to seller
+	// Time of arrival to seller
 	int arrival_time; 
+	// Customer ID
+	char customer_id;
 };
 
 typedef struct customer customer;
