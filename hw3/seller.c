@@ -31,15 +31,17 @@ void* sell_seats(void* seat_seller){
     	int currentTime = (int) difftime(after, startTime);
 
    		printf("\n....Timer- %1d:%02d\n\n", currentTime / 60, currentTime % 60);
-   		sleep(((seller *) seat_seller_s)->start_queue[i].arrival_time); // Sleep so the process will only run on its arrival time..not working.		
+   		sleep(seat_seller_s->start_queue[i].arrival_time); // Sleep so the process will only run on its arrival time..not working.		
 
    		/*
 		printf("\n CUSTOMER ID %c is being served \n\n", ((seller *) seat_seller_s)->start_queue[i].customer_id);*/
-		char currentCustomer = ((seller *) seat_seller_s)->start_queue[i].customer_id; 
-		printf("\nCUSTOMER ID %c SELLER %c%c NOW AT %d \n\n", ((seller *) seat_seller_s)->start_queue[i].customer_id, 
+		char currentCustomer[2];
+		currentCustomer[1] = seat_seller_s->start_queue[i].customer_id[1]; 
+		currentCustomer[0] = seat_seller_s->start_queue[i].customer_id[0];
+		printf("\nCUSTOMER ID %c%c SELLER %c%c NOW AT %d \n\n", seat_seller_s->start_queue[i].customer_id[0], seat_seller_s->start_queue[i].customer_id[1], 
 				seat_seller_s->name[0],
 				seat_seller_s->name[1],
-				((seller *) seat_seller_s)->start_queue[i].arrival_time);
+				seat_seller_s->start_queue[i].arrival_time);
 
 	// Continue as long as seats are not filled and minute hasn't hit 60
 	//while((filled_seats < TOTAL_SEATS) || (currentTime % 60 != 60)){
@@ -50,7 +52,7 @@ void* sell_seats(void* seat_seller){
 		if (seat_seller_s->sales_price == 1) {
 			// L seller
 
-			printf("\nCustomer %c being served\n", currentCustomer);
+			printf("\nCustomer %c%c being served\n", currentCustomer[0], currentCustomer[1]);
 			sleep((rand() % 1) + 1); // Sell for 1 or 2 minutes
 
 			// Sell seat starting with row 10 and work towards the front
@@ -64,10 +66,11 @@ void* sell_seats(void* seat_seller){
 					
 					*(seat_map + x) = (*seat_seller_s).name[0];
 					*(seat_map + x + 1) = (*seat_seller_s).name[1];
-					*(seat_map + x + 2) = currentCustomer;
+					//TODO: ADD SLOT FOR CUSTOMER
+					*(seat_map + x + 2) = currentCustomer[1];
 					print_seat();
 
-					printf("\nCustomer %c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer,
+					printf("\nCustomer %c%c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer[0], currentCustomer[1],
 						(*seat_seller_s).name[0], (*seat_seller_s).name[1], aftertime / 60, aftertime % 60);
 
 					break;
@@ -77,7 +80,7 @@ void* sell_seats(void* seat_seller){
 		} else if (seat_seller_s->sales_price == 2) {
 			// M seller
 
-			printf("\nCustomer %c being served\n", currentCustomer);
+			printf("\nCustomer %c%c being served\n", currentCustomer[0], currentCustomer[1]);
 			sleep((rand() % 3) + 2); // Sell for 2,3 or 4 minutes
 
 			// Sell seat starting with row 5 then 6 then 4 then 7
@@ -93,11 +96,11 @@ void* sell_seats(void* seat_seller){
 					
 					*(seat_map + startingIndex) = (*seat_seller_s).name[0];
 					*(seat_map + startingIndex + 1) = (*seat_seller_s).name[1];
-					*(seat_map + startingIndex + 2) = currentCustomer;
+					*(seat_map + startingIndex + 2) = currentCustomer[1];
 					seatNotSold = 0; // Seat now sold
 					print_seat();
 
-					printf("\nCustomer %c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer,
+					printf("\nCustomer %c%c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer[0], currentCustomer[1],
 						(*seat_seller_s).name[0], (*seat_seller_s).name[1], aftertime / 60, aftertime % 60);
 				}
 				startingIndex += 3; // Increment by 3 in index
@@ -114,7 +117,7 @@ void* sell_seats(void* seat_seller){
 		} else if (seat_seller_s->sales_price == 3) {
 			// H Seller sales_price = 3
 
-			printf("\nCustomer %c being served\n", currentCustomer);
+			printf("\nCustomer %c%c being served\n", currentCustomer[0], currentCustomer[1]);
 			sleep((rand() % 4) + 4); // Sell for 4,5,6 or 7 minutes
 
 			// Sell seat starting with row 1 then worl towards the front
@@ -126,10 +129,10 @@ void* sell_seats(void* seat_seller){
 
             		*(seat_map + x) = (*seat_seller_s).name[0];
 					*(seat_map + x + 1) = (*seat_seller_s).name[1];
-					*(seat_map + x + 2) = currentCustomer;
+					*(seat_map + x + 2) = currentCustomer[1];
 					print_seat();
 
-					printf("\nCustomer %c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer,
+					printf("\nCustomer %c%c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer[0], currentCustomer[1],
 						(*seat_seller_s).name[0], (*seat_seller_s).name[1], aftertime / 60, aftertime % 60);
 					break;
 				}
