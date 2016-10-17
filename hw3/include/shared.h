@@ -24,4 +24,10 @@ char* seat_map;
 ///When to start selling
 bool start; 
 
+int h_t_sold;
+
+int m_t_sold;
+
+int l_t_sold;
+
 #endif
