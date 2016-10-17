@@ -122,52 +122,52 @@ int main(){
 
 	printf("\n----------------QUEUE H seller-------------------------------\n");
 	//print_customers(h_sellers[0].start_queue, NUM_OF_CUSTOMERS);
-	sort(h_sellers[0].start_queue, &h_sellers[0].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
+	//sort(h_sellers[0].start_queue, &h_sellers[0].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
 	//printf("\n-----------------------------after sort------------------\n");
 	print_customers(h_sellers[0].start_queue, NUM_OF_CUSTOMERS);
 
 	printf("\n----------------QUEUE FIRST M seller-------------------------------\n");
 	//print_customers(m_sellers[0].start_queue, NUM_OF_CUSTOMERS);
-	sort(m_sellers[0].start_queue, &m_sellers[0].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
+	//sort(m_sellers[0].start_queue, &m_sellers[0].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
 	//printf("\n-----------------------------after sort------------------\n");
 	print_customers(m_sellers[0].start_queue, NUM_OF_CUSTOMERS);
 
 	printf("\n----------------QUEUE SECOND M seller-------------------------------\n");
 	//print_customers(m_sellers[1].start_queue, NUM_OF_CUSTOMERS);
-	sort(m_sellers[1].start_queue, &m_sellers[1].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
+	//sort(m_sellers[1].start_queue, &m_sellers[1].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
 	//printf("\n-----------------------------after sort------------------\n");
 	print_customers(m_sellers[1].start_queue, NUM_OF_CUSTOMERS);
 
 	printf("\n----------------QUEUE THIRD M seller-------------------------------\n");
 	//print_customers(m_sellers[2].start_queue, NUM_OF_CUSTOMERS);
-	sort(m_sellers[2].start_queue, &m_sellers[2].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
+	//sort(m_sellers[2].start_queue, &m_sellers[2].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
 	//printf("\n-----------------------------after sort------------------\n");
 	print_customers(m_sellers[2].start_queue, NUM_OF_CUSTOMERS);
 
 	printf("\n----------------QUEUE FIRST L seller-------------------------------\n");
 	//print_customers(l_sellers[0].start_queue, NUM_OF_CUSTOMERS);
-	sort(l_sellers[0].start_queue, &l_sellers[0].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
+	//sort(l_sellers[0].start_queue, &l_sellers[0].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
 	//printf("\n-----------------------------after sort------------------\n");
 	print_customers(l_sellers[0].start_queue, NUM_OF_CUSTOMERS);
 
 	printf("\n----------------QUEUE SECOND L seller-------------------------------\n");
-	sort(l_sellers[1].start_queue, &l_sellers[1].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
+	//sort(l_sellers[1].start_queue, &l_sellers[1].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
 	print_customers(l_sellers[1].start_queue, NUM_OF_CUSTOMERS);
 
 	printf("\n----------------QUEUE THIRD L seller-------------------------------\n");
-	sort(l_sellers[2].start_queue, &l_sellers[2].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
+	//sort(l_sellers[2].start_queue, &l_sellers[2].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
 	print_customers(l_sellers[2].start_queue, NUM_OF_CUSTOMERS);
 
 	printf("\n----------------QUEUE FOURTH L seller-------------------------------\n");
-	sort(l_sellers[3].start_queue, &l_sellers[3].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
+	//sort(l_sellers[3].start_queue, &l_sellers[3].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
 	print_customers(l_sellers[3].start_queue, NUM_OF_CUSTOMERS);
 
 	printf("\n----------------QUEUE FIFTH L seller-------------------------------\n");
-	sort(l_sellers[4].start_queue, &l_sellers[4].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
+	//sort(l_sellers[4].start_queue, &l_sellers[4].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
 	print_customers(l_sellers[4].start_queue, NUM_OF_CUSTOMERS);
 
 	printf("\n----------------QUEUE SIXTH L seller-------------------------------\n");
-	sort(l_sellers[5].start_queue, &l_sellers[5].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
+	//sort(l_sellers[5].start_queue, &l_sellers[5].start_queue[0].arrival_time, sizeof(customer), NUM_OF_CUSTOMERS);
 	print_customers(l_sellers[5].start_queue, NUM_OF_CUSTOMERS);
 
 	// Create seller M threads
