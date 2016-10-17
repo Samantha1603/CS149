@@ -5,11 +5,15 @@
 
 ///Total Number of seats that can be sold
 #define TOTAL_SEATS 100	
+// Total minutes to sell
+#define MAX_MINUTES 60 
 
 /// Restricts access to seats
 pthread_mutex_t seat_access; 
 
 pthread_cond_t cond;
+
+time_t startTime;
 
 ///Counts how many seats are filled - semaphore
 int filled_seats; 

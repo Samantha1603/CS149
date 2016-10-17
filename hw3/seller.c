@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "shared.h"
 #include "seller.h"
 
@@ -16,25 +17,141 @@ void print_sellers(seller* list, int length){
 }
 
 void* sell_seats(void* seat_seller){
-	int current_customer = 0;
+
+	// Wait for seat access then unlock 
 	while(!start) pthread_cond_wait(&cond, &seat_access);
 	pthread_mutex_unlock(&seat_access);
 	seller* seat_seller_s = (seller*) seat_seller;
-	while(filled_seats < TOTAL_SEATS){
-		// add check for customer arrival before trying lock
+
+
+   	for (int i = 0; i < NUM_OF_CUSTOMERS; i++)  {
+
+		time_t after;
+    	time(&after);
+    	int currentTime = (int) difftime(after, startTime);
+
+   		printf("\n....Timer- %1d:%02d\n\n", currentTime / 60, currentTime % 60);
+   		sleep(((seller *) seat_seller_s)->start_queue[i].arrival_time); // Sleep so the process will only run on its arrival time..not working.		
+
+   		/*
+		printf("\n CUSTOMER ID %c is being served \n\n", ((seller *) seat_seller_s)->start_queue[i].customer_id);*/
+		char currentCustomer = ((seller *) seat_seller_s)->start_queue[i].customer_id; 
+		printf("\nCUSTOMER ID %c SELLER %c%c NOW AT %d \n\n", ((seller *) seat_seller_s)->start_queue[i].customer_id, 
+				seat_seller_s->name[0],
+				seat_seller_s->name[1],
+				((seller *) seat_seller_s)->start_queue[i].arrival_time);
+
+	// Continue as long as seats are not filled and minute hasn't hit 60
+	//while((filled_seats < TOTAL_SEATS) || (currentTime % 60 != 60)){
+	// add check for customer arrival before trying lock
+	
 		pthread_mutex_lock(&seat_access);
-		for(int x = 0; x < (TOTAL_SEATS * 3); x += 3){
-			//buy a seat
-			if(*(seat_map + x) == (char) 45){
-				*(seat_map + x) = (*seat_seller_s).name[0];
-				*(seat_map + x + 1) = (*seat_seller_s).name[1];
-				*(seat_map + x + 2) = (*seat_seller_s).name[2];
-				current_customer++;
-				break;
+
+		if (seat_seller_s->sales_price == 1) {
+			// L seller
+
+			printf("\nCustomer %c being served\n", currentCustomer);
+			sleep((rand() % 1) + 1); // Sell for 1 or 2 minutes
+
+			// Sell seat starting with row 10 and work towards the front
+			for(int x = 297; x > 0; x -= 3){
+				if(*(seat_map + x) == (char) 45){ // (char) 45 = '-'
+					//printf("Customer L%d%02d is now being served", min / 60, min % 60, id % 10, count + 1);
+
+					time_t after;
+                    time(&after);
+                    int aftertime = (int) difftime(after, startTime);
+					
+					*(seat_map + x) = (*seat_seller_s).name[0];
+					*(seat_map + x + 1) = (*seat_seller_s).name[1];
+					*(seat_map + x + 2) = currentCustomer;
+					print_seat();
+
+					printf("\nCustomer %c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer,
+						(*seat_seller_s).name[0], (*seat_seller_s).name[1], aftertime / 60, aftertime % 60);
+
+					break;
+				}
+			}
+
+		} else if (seat_seller_s->sales_price == 2) {
+			// M seller
+
+			printf("\nCustomer %c being served\n", currentCustomer);
+			sleep((rand() % 3) + 2); // Sell for 2,3 or 4 minutes
+
+			// Sell seat starting with row 5 then 6 then 4 then 7
+			int startingIndex = 120;
+			int seatNotSold = 1;
+
+			do {
+				if (*(seat_map + startingIndex) == (char) 45) {
+
+					time_t after;
+                    time(&after);
+                    int aftertime = (int) difftime(after, startTime);
+					
+					*(seat_map + startingIndex) = (*seat_seller_s).name[0];
+					*(seat_map + startingIndex + 1) = (*seat_seller_s).name[1];
+					*(seat_map + startingIndex + 2) = currentCustomer;
+					seatNotSold = 0; // Seat now sold
+					print_seat();
+
+					printf("\nCustomer %c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer,
+						(*seat_seller_s).name[0], (*seat_seller_s).name[1], aftertime / 60, aftertime % 60);
+				}
+				startingIndex += 3; // Increment by 3 in index
+
+				// Switching for 5->6->4->7 only
+				if (startingIndex == 180) { // Hit 7 after end of 6, go back to row 4
+					startingIndex = 90; // Index of row 4
+				} else if (startingIndex == 120) { // Hit row 5 after end of 4, go to row 7
+					startingIndex = 180;
+				}
+
+			} while (seatNotSold);
+		
+		} else if (seat_seller_s->sales_price == 3) {
+			// H Seller sales_price = 3
+
+			printf("\nCustomer %c being served\n", currentCustomer);
+			sleep((rand() % 4) + 4); // Sell for 4,5,6 or 7 minutes
+
+			// Sell seat starting with row 1 then worl towards the front
+			for(int x = 0; x < (TOTAL_SEATS * 3); x += 3){
+				if(*(seat_map + x) == (char) 45){
+					time_t after;
+                    time(&after);
+                    int aftertime = (int) difftime(after, startTime);
+
+            		*(seat_map + x) = (*seat_seller_s).name[0];
+					*(seat_map + x + 1) = (*seat_seller_s).name[1];
+					*(seat_map + x + 2) = currentCustomer;
+					print_seat();
+
+					printf("\nCustomer %c of seller %c%c - Timer- %1d:%02d purchased a ticket", currentCustomer,
+						(*seat_seller_s).name[0], (*seat_seller_s).name[1], aftertime / 60, aftertime % 60);
+					break;
+				}
 			}
 		}
+
 		filled_seats++;
 		pthread_mutex_unlock(&seat_access);
 	}
+	//}
+
 	pthread_exit(NULL);
+}
+
+void print_seat(){
+	printf("\n\n");
+	for(int x = 0; x < (TOTAL_SEATS * 3); x += 3){
+		printf("|%c%c%c| ", seat_map[x], seat_map[x + 1], seat_map[x + 2]);
+		if (x == 27 || x == 57 || x == 87 || x == 117 || x == 147 || x == 177 ||
+			x == 207 || x == 237 || x == 267) {
+			printf("\n");
+		}
+	}
+	printf("\n\n");
 }
