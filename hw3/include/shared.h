@@ -26,6 +26,7 @@ bool start;
 
 int totalL_sold; // total tickets L seller sold
 int totalM_sold; // total tickets M seller sold
-int totalH_sold; // total tickets H seller sold
+int totalH_sold; // total tickets M seller sold
+
 
 #endif

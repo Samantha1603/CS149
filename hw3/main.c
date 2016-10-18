@@ -205,4 +205,3 @@ void timerHandler(int signal){
 	printf("\n");
 	exit(0); // Program finishes
 }
-
