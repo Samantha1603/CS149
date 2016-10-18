@@ -180,13 +180,5 @@ int main(int argc, char *argv[]){
 }
 
 void timerHandler(int signal){
-
-	int totalCustomers = (NUM_OF_CUSTOMERS * 10);
-	printf("\nTotal seats sold: %d", filled_seats);
-	printf("\nTotal L seats sold: %d", totalL_sold);
-	printf("\nTotal M seats sold: %d", totalM_sold);
-	printf("\nTotal H seats sold: %d", totalH_sold);
-	printf("\nTotal customers turned away: %d", totalCustomers - filled_seats);
-	printf("\n");
-	exit(0); // Program finishes
+	print_stats();
 }

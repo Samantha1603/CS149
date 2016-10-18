@@ -185,7 +185,6 @@ void print_seats(){
 
 void print_stats() {
 	int totalCustomers = (NUM_OF_CUSTOMERS * 10);
-	printf("\nTOTAL CUSTOMER IS %d\n", totalCustomers);
 	printf("\nTotal seats sold: %d", filled_seats);
 	printf("\nTotal L seats sold: %d", totalL_sold);
 	printf("\nTotal M seats sold: %d", totalM_sold);
