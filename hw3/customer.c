@@ -9,15 +9,13 @@ void make_customers(customer** queue, int length){
 	for(int x = 0; x < length; x++){
 		(*queue)[x].arrival_time = (rand() % 59) + 1;
 	}
-
-	sort(*queue, &((*queue)[0].arrival_time), sizeof(customer), NUM_OF_CUSTOMERS);
-
+	sort(*queue, &((*queue)[0].arrival_time), sizeof(customer), length);
 	for(int x = 0; x < length; x++){
 		(*queue)[x].customer_id[0] = '0';
 		(*queue)[x].customer_id[1] = (x + 1) + '0';
-		if(x == 9){
-			(*queue)[x].customer_id[0] = 1 + '0';
-			(*queue)[x].customer_id[1] = '0';
+		if(x >= 9){
+			(*queue)[x].customer_id[0] = (int) (x + 1) / 10 + '0';
+			(*queue)[x].customer_id[1] = ((x + 1) % 10) + '0';
 
 		}
 	}
