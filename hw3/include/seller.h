@@ -34,4 +34,9 @@ void* sell_seats(void* seat_seller);
  * print_seats() prints the seat slots
  */
 void print_seats();
+
+/**
+ * print_stats() when all seats are taken
+ */
+void print_stats();
 #endif
