@@ -4,11 +4,14 @@
 /// Total number of processes to create
 #define NUMBER_PROCESS 150
 
+#define TOTAL_TIME 100;
+
 struct process{
-	char name[2];
-	int page_size;
-	int arrival_time;
-	int completion_time;
+	char name[2];// 1 Char per MB? only 1 Char per name?
+	int page_size; // Can be 5, 11, 17, and 31
+	int arrival_time; // 
+	int completion_time; // Can be 1, 2, 3, 4, or 5
+	struct process* node;
 };
 
 typedef struct process process;
