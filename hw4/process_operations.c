@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "shared.h"
 
 void generate_processes(process** list){
@@ -17,7 +19,8 @@ void generate_processes(process** list){
 		head->completion_time = (rand() % 5) + 1;
 		head = head->next;
 	}
-	free(head);
+	head->next = malloc(sizeof(process));
+	//free(head); needed?
 	*list = b_list;
 	return;
 }
@@ -36,29 +39,37 @@ void print_process(process p){
 }
 
 void sort_pll(process* list){
-	process* head = list;
+	process* b_list = list;
+	process* head = b_list;
 	process* p = head;
 	process* lo = head; // no need for previous because lo doesnt compare, and next is already available in the struct
-	process* hi;
+	process* lo_prev;
+	int lo_count = 0;
+	process* hi; int hi_count;
 	process* hi_prev;
-	process* pivot;
 	int counter = 0;
 	while(p != NULL){
 		counter++;
 		p = p->next;
 	}
-	free(p);
+	//free(p); needed?
 
-	hi = head;
-	for(int x = 0; x < counter - 1; x++){
+	/*hi_prev = head;
+	for(int x = 0; x < counter; x++){
 		hi_prev = hi_prev->next;
+		hi_count = x;
 	}
 	hi = hi_prev->next;
 
-	pivot = head;
-	for(int x = 0; x < counter / 2; x++){
-		pivot = pivot->next;
-	}
+	// All pointers should be set up start sorting
+	for(int x = 0; x < counter; x++){
+		if(hi->arrival_time < lo->arrival_time){
+			hi_prev->next = lo;
+			p = lo->next;
+			lo->next = hi->next;
+			hi->next = p;
+			if(lo_prev != NULL) lo_prev->next = hi;
+		}
+	}*/
 	return;
-	// All pointers should be set up 
 }
