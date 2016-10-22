@@ -15,5 +15,8 @@ int main(){
 	process* llist;
 	generate_processes(&llist);
 	print_ll(llist);
+	printf("\n\nAfter sort\n\n");
+	sort_pll(llist);
+	print_ll(llist);
 	return 0;
 }
