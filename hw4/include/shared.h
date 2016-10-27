@@ -2,7 +2,7 @@
 #define SHARED
 
 /// Total number of processes to create
-#define NUMBER_PROCESS 11
+#define NUMBER_PROCESS 150
 
 #define TOTAL_TIME 100;
 
