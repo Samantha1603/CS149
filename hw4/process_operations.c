@@ -20,7 +20,7 @@ void generate_processes(process** list){
 		head->completion_time = (rand() % 5) + 1;
 		head = head->next;
 	}
-	head->next = NULL;
+	head = NULL;
 	//free(head); needed?
 	*list = b_list;
 	return;
@@ -51,14 +51,20 @@ void sort_pll(process** list){
 	}
 	length--;
 
-	p1 = sort_pll_r(b_list, 0, length / 2);
-	p2 = sort_pll_r(b_list, (length / 2), length);
+	//p1 = sort_pll_r(b_list, 0, length / 2);
+	//p2 = sort_pll_r(b_list, (length / 2) + 1, length);
+
+	p1 = sort_pll_r(b_list, 0, length);
+
+	print_ll(&p1[0]);
+	//print_ll(p2);
+
 
 	printf("Sort done. Checking...\n");
 	process* p_tot = malloc(sizeof(process) * length);
 	int p2_bounds = length - (length / 2);
 	int p1_bounds = length / 2;
-	for(int x = 0; x < length; x++){
+	/*for(int x = 0; x < length; x++){
 		if(p1 == NULL){
 			p_tot[x] = *p2;
 			p2_bounds--;
@@ -89,11 +95,11 @@ void sort_pll(process** list){
 		p1 = p1->next;
 		p1_bounds--;
 		}
+		if( x > 0) p_tot[x - 1].next = &p_tot[x];
 	}
 
 	p_tot[length - 1].next = NULL;
-
-	print_ll(&p_tot[0]);
+	print_ll(p_tot);*/
 	return;
 }
 
@@ -160,8 +166,7 @@ process* sort_pll_r(process* list, int lo, int hi){
 		p1 = p1->next;
 		p1_bounds--;
 		}
-		temp = p_tot[x];
-		if( x > 0)
+		if( x > 0) p_tot[x - 1].next = &p_tot[x];
 	}
 	p_tot[(hi-lo) - 1].next = NULL;
 
