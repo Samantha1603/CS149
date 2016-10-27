@@ -41,95 +41,100 @@ void print_process(process p){
 
 void sort_pll(process** list){
 	process* b_list = *list;
-	process* head = b_list;
-	process* p = &*head;
-	process* lo = &*head; // no need for previous because lo doesnt compare, and next is already available in the struct
-	process* lo_prev = NULL;
-	int lo_count = 0;
-	process* hi; int hi_count;
-	process* hi_prev;
-	int counter = 0;
-	while(p != NULL){
-		counter++;
-		p = p->next;
+	process* node = *list;
+	process* p1;
+	process* p2;
+	int length = 0;
+	while(node != NULL){
+		node = node->next;
+		length++;
 	}
-	counter -= 2;
-	//free(p); needed?
-
-	hi_prev = &*head;
-	for(int x = 0; x < counter - 1; x++){
-		hi_prev = &*(hi_prev->next);
-		hi_count = x;
-	}
-	hi = &*(hi_prev->next);
-
-	//initial swap, tests if the first and last members are incorrect. Special cases because
-	//there is no previous to the beginning and the beginning of the list, b_list, must be set to the new value
-	printf("Print hi and prev: HI - %c PREV: %c\n", hi->name[0], hi_prev->name[0]);
-	if(hi->arrival_time < lo->arrival_time){
-		printf("Test HI arrival: %d LO arrival: %d\n", hi->arrival_time, lo->arrival_time);
-		hi_prev->next = &*lo;
-		printf("hi_prev->next set to lo\n");
-		p = &*(lo->next);
-		printf("temp set to lo->next\n");
-		lo->next = &*(hi->next);
-		printf("lo->next set to hi->next\n");
-		hi->next = &*p;
-		printf("hi->next set to temp\n");
-		if(lo_prev != NULL) lo_prev->next = &*hi;
-
-		//switching pointer names. After this switch, we can count on lo, being the element with a lower arrival time
-		// than the hi pointer
-		p = hi;
-		hi = lo;
-		lo = p;
-		*list = lo; //may need to changed after I revise the recursive functions
-		b_list = lo; //probabl gonna delete this and just use list once the function is working fine
-	}	
-	// All pointers should be set up start sorting. We will be comparing based on next.
-	//  This eliminates the need for a "previous" pointer
-	sort_pll_r(&b_list, 0, counter);
-	sort_pll_r(&b_list, (counter / 2), counter);
-	print_ll(b_list);
+	p1 = sort_pll_r(b_list, 0, length / 2);
+	p2 = sort_pll_r(b_list, (length / 2), length - 1);
+	print_ll(p1);
+	print_ll(p2);
 	return;
 }
 
-void sort_pll_r(process** list, int lo, int hi){
-	if(hi - lo < 1) return;
+process* sort_pll_r(process* list, int lo, int hi){
+	process* p1 = list;
+	if(hi - lo < 1) return p1;
+	process* p2 = list;
 	if(hi - lo == 1){
-		process* p1 = *list;
-		process* p2 = *list;
 		process temp; process temp2;
-		for(int x = 0; x < lo - 1; x++) p1 = p1->next;
-		for(int x = 0; x < hi - 1; x++) p2 = p2->next;
-		if(p2->next == NULL){
-			printf("no swap possible, end of list\n");
-			return;			
+		for(int x = 0; x < lo; x++) p1 = p1->next;
+		for(int x = 0; x < hi; x++){
+			 if(p2 == NULL){
+			 	p1->next = NULL;
+			 	return p1;
+			 }
+			 p2 = p2->next;
 		}
-		printf("Acquire p1 and 2: ");
-		print_process(*p1->next); print_process(*p2->next);
-		if(p1->next->arrival_time > p2->next->arrival_time){
-			printf("HI: %d LO: %d\n", hi, lo);
-			printf("Swapping...\n");
-			p1->next = p2->next;
-			if(p1->next->next == NULL){
-				p2->next = NULL; // FIX FOR EDGE CASE?
-				p1->next = p2;
-				return;
-			}
-			temp = *p1->next->next;
-			*p2->next = temp;
-			p1->next = p2;
-			printf("After swap: \n");
-			print_process(*p1->next);
-			print_process(*p2->next);
+		//printf("Acquire p1 and 2\n");
+		//print_process(*p1);
+		//print_process(*p2);
+		if(p1->arrival_time > p2->arrival_time){
+			swap(&*p1, &*p2);
 
+			//printf("after swap:\n");
+			//print_process(*p1);
+			//print_process(*p2);	
 		}
-		p1 = NULL;
-		p2 = NULL;
-		return;
+		return p1;
 	}
-	sort_pll_r(&(*list), lo, (hi+lo) / 2);
-	sort_pll_r(&(*list), ((hi+lo) / 2) + 1, hi);
-	return;
+	p1 = sort_pll_r(list, lo, (hi+lo) / 2);
+	p2 = sort_pll_r(list, ((hi+lo) / 2), hi);
+	int p1_bounds = ((hi+lo) / 2) - lo;
+	int p2_bounds = hi - (((hi+lo) / 2));
+	process* p_tot = malloc(sizeof(process) * (hi-lo));
+
+	for(int x = 0; x < hi - lo; x++){
+		if(p1 == NULL){
+			p_tot[x] = *p2;
+			p2_bounds--;
+			p2 = p2->next;
+		}
+		else if(p2 == NULL){
+			p_tot[x] = *p1;
+			p1_bounds--;	
+			p1 = p1->next;
+		}
+		else if(p1->arrival_time < p2->arrival_time && p1_bounds >= 0){
+			p_tot[x] = *p1;
+			p1 = p1->next;
+			p1_bounds--;
+		}
+		else if(p1->arrival_time > p2->arrival_time && p2_bounds >= 0){
+			p_tot[x] = *p2;
+			p2 = p2->next;
+			p2_bounds--;
+		}
+		else if(p1_bounds < 1){
+			p_tot[x] = *p2;
+			p2 = p2->next;
+			p2_bounds--;
+		}
+		else{
+		p_tot[x] = *p1;
+		p1 = p1->next;
+		p1_bounds--;
+		}
+	}
+	p_tot[(hi-lo)].next = NULL;
+	return p_tot;
+}
+
+static void swap(process* a, process* b){
+	process temp = *a;
+	a->name[0] = b->name[0];
+	a->name[1] = b->name[1];
+	a->page_size = b->page_size;
+	a->arrival_time = b->arrival_time;
+	a->completion_time = b->completion_time;
+
+	b->name[0] = temp.name[0];
+	b->name[1] = temp.name[1];
+	b->page_size = temp.page_size;
+	b->arrival_time = temp.arrival_time;
+	b->completion_time = temp.completion_time;
 }
