@@ -43,7 +43,6 @@ void sort_pll(process** list){
 	process* b_list = *list;
 	process* node = *list;
 	process* p1;
-	process* p2;
 	int length = 0;
 	while(node != NULL){
 		node = node->next;
@@ -55,52 +54,7 @@ void sort_pll(process** list){
 	//p2 = sort_pll_r(b_list, (length / 2) + 1, length);
 
 	p1 = sort_pll_r(b_list, 0, length);
-
-	printf("after sorted:\n");
-	print_ll(p1);
-	//print_ll(p2);
-
-
-	printf("Sort done. Checking...\n");
-	process* p_tot = malloc(sizeof(process) * length);
-	int p2_bounds = length - (length / 2);
-	int p1_bounds = length / 2;
-	/*for(int x = 0; x < length; x++){
-		if(p1 == NULL){
-			p_tot[x] = *p2;
-			p2_bounds--;
-			p2 = p2->next;
-		}
-		else if(p2 == NULL){
-			p_tot[x] = *p1;
-			p1_bounds--;	
-			p1 = p1->next;
-		}
-		else if(p1->arrival_time < p2->arrival_time && p1_bounds > 0){
-			p_tot[x] = *p1;
-			p1 = p1->next;
-			p1_bounds--;
-		}
-		else if(p1->arrival_time > p2->arrival_time && p2_bounds > 0){
-			p_tot[x] = *p2;
-			p2 = p2->next;
-			p2_bounds--;
-		}
-		else if(p1_bounds < 1){
-			p_tot[x] = *p2;
-			p2 = p2->next;
-			p2_bounds--;
-		}
-		else{
-		p_tot[x] = *p1;
-		p1 = p1->next;
-		p1_bounds--;
-		}
-		if( x > 0) p_tot[x - 1].next = &p_tot[x];
-	}
-
-	p_tot[length - 1].next = NULL;
-	print_ll(p_tot);*/
+	*list = p1;
 	return;
 }
 
@@ -109,7 +63,6 @@ process* sort_pll_r(process* list, int lo, int hi){
 	if(hi - lo < 1) return p1;
 	process* p2 = list;
 	if(hi - lo == 1){
-		process temp; process temp2;
 		for(int x = 0; x < lo; x++) p1 = p1->next;
 		for(int x = 0; x < hi; x++){
 			 if(p2 == NULL){
@@ -123,11 +76,9 @@ process* sort_pll_r(process* list, int lo, int hi){
 		//print_process(*p2);
 		if(p1->arrival_time > p2->arrival_time){
 			swap(&*p1, &*p2);
-
-			//printf("after swap:\n");
-			//print_process(*p1);
-			//print_process(*p2);	
 		}
+
+
 		return p1;
 	}
 	p1 = sort_pll_r(list, lo, (hi+lo) / 2);
@@ -136,6 +87,7 @@ process* sort_pll_r(process* list, int lo, int hi){
 	int p2_bounds = hi - (((hi+lo) / 2));
 	process* p_tot = malloc(sizeof(process) * (hi-lo));
 	process temp;
+
 	for(int x = 0; x < hi - lo; x++){
 		if(p1 == NULL){
 			p_tot[x] = *p2;
@@ -175,6 +127,7 @@ process* sort_pll_r(process* list, int lo, int hi){
 }
 
 static void swap(process* a, process* b){
+	if(a->completion_time == 0 || b->completion_time == 0) return;
 	process temp = *a;
 	a->name[0] = b->name[0];
 	a->name[1] = b->name[1];
