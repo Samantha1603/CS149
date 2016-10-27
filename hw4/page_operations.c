@@ -1,0 +1,26 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include "shared.h"
+
+
+
+void generate_pageList(page** list)
+{
+	page* b_list;
+	page* head;
+	b_list = malloc(sizeof(page));
+	b_list->next = malloc(sizeof(page));
+	b_list->status = 0;
+	head = b_list->next;
+
+	for(int x = 1; x < NUMBER_PAGES; x++){ //create/initialize page list with 100 avaliable pages.
+		
+		head->next = malloc(sizeof(page));
+		head = head->next;
+	}
+	head->next = NULL;
+	//free(head); needed?
+	*list = b_list;
+	return;
+}
