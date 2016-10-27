@@ -11,7 +11,7 @@ struct process{
 	int page_size; // Can be 5, 11, 17, and 31
 	int arrival_time; // 
 	int completion_time; // Can be 1, 2, 3, 4, or 5
-	struct process* node;
+	struct process* next; // makes possible to create linked list
 };
 
 typedef struct process process;
