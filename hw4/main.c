@@ -18,6 +18,6 @@ int main(){
 	printf("\n\nAfter sort\n\n");
 	sort_pll(&llist);
 	printf("Outside Method \n \n");
-	//print_ll(llist);
+	print_ll(llist);
 	return 0;
 }
