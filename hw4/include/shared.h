@@ -3,7 +3,7 @@
 
 /// Total number of processes to create
 #define NUMBER_PROCESS 150
-
+#define NUMBER_PAGES 100;
 #define TOTAL_TIME 100;
 
 struct process{
