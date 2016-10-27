@@ -20,7 +20,7 @@ void generate_processes(process** list){
 		head->completion_time = (rand() % 5) + 1;
 		head = head->next;
 	}
-	head = NULL;
+	head->next = NULL;
 	//free(head); needed?
 	*list = b_list;
 	return;
@@ -56,7 +56,8 @@ void sort_pll(process** list){
 
 	p1 = sort_pll_r(b_list, 0, length);
 
-	print_ll(&p1[0]);
+	printf("after sorted:\n");
+	print_ll(p1);
 	//print_ll(p2);
 
 
