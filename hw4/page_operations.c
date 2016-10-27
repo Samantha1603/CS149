@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 #include "shared.h"
 
 
@@ -24,3 +25,29 @@ void generate_pageList(page** list)
 	*list = b_list;
 	return;
 }
+
+bool find_4FreePages(page* llist)
+{
+	int pagesFound = 0;
+	while(pagesFound < 4)
+	{
+	for(int x = 1; x < NUMBER_PAGES; x++) //iterate through linked list of pages to find 4 available pages.
+	{
+          if(head->status = 0)
+          {
+          	pagesFound++;
+          	head->status = 1;
+
+          }
+          head = head->next;
+	}
+}
+		if(pagesFound == 4){
+			return true;
+		}
+		
+else{
+ return false;
+}
+}
+
