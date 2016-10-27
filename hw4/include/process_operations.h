@@ -27,4 +27,6 @@ void generate_processes(process** list);
  */
 void sort_pll(process* list);
 
+void sort_pll_r(process** list, int lo, int hi);
+
 #endif
