@@ -2,7 +2,7 @@
 #define PAGE_OPERATIONS
 
 //generates linked list of pages.
-void generate_pages(page** list);
+void generate_pageList(page** list);
 
 
 void print_pagesLL(page* llist);
