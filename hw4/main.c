@@ -12,14 +12,16 @@
 
 int main(){
 	srand(time(NULL));
+	
+	srand(time(NULL));
 	// Generate Processes
-	/*
 	process* llist;
 	generate_processes(&llist);
 	print_ll(llist);
 	printf("\n\nAfter sort\n\n");
-	sort_pll(llist);
-	print_ll(llist);*/
+	sort_pll(&llist);
+	printf("Outside Method \n \n");
+	print_ll(llist);
 
 	page* pllist;
 	generate_pageList(&pllist);
@@ -28,6 +30,5 @@ int main(){
 	printf("\n\n\n\n\n\n");
 	removeAPage(&pllist, 4);
 	print_pagesLL(pllist);
-
 	return 0;
 }

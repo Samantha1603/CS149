@@ -25,6 +25,10 @@ void generate_processes(process** list);
  * NOT FUNCTIONAL
  * @param list linked list to sort, starting at first process in the list
  */
-void sort_pll(process* list);
+void sort_pll(process** list);
+
+process* sort_pll_r(process* list, int lo, int hi);
+
+static void swap(process* a, process* b);
 
 #endif

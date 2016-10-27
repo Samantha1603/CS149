@@ -4,4 +4,4 @@ CFLAGS=-I$(HDIR)	-std=c99	-g
 makehw4:	main.o	process_operations.o page_operations.o FIFO.o
 	$(CC)	$(CFLAGS)	-o	hw4	main.o process_operations.o page_operations.o FIFO.o
 clean:
-	rm *.o hw4
+	rm *.o hw4 *.stackdump
