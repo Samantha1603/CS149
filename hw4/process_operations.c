@@ -36,7 +36,7 @@ void print_ll(process* list){
 }
 
 void print_process(process p){
-	printf("\n Completion Time: %d Arrival Time: %d Process Name: %c%c\n", p.completion_time, p.arrival_time, p.name[0], p.name[1]);
+	printf("\n Arrival Time: %d Completion Time: %d Process Name: %c%c\n", p.arrival_time, p.completion_time, p.name[0], p.name[1]);
 }
 
 void sort_pll(process** list){
@@ -83,49 +83,52 @@ void sort_pll(process** list){
 		p = hi;
 		hi = lo;
 		lo = p;
-		*list = lo;
+		*list = lo; //may need to changed after I revise the recursive functions
+		b_list = lo; //probabl gonna delete this and just use list once the function is working fine
 	}	
 	// All pointers should be set up start sorting. We will be comparing based on next.
 	//  This eliminates the need for a "previous" pointer
-	//sort_pll_r(&b_list, 0, counter);
-	//sort_pll_r(&b_list, (counter / 2), counter);
+	sort_pll_r(&b_list, 0, counter);
+	sort_pll_r(&b_list, (counter / 2), counter);
+	print_ll(b_list);
 	return;
 }
 
 void sort_pll_r(process** list, int lo, int hi){
-	if(hi - lo <= 1) return;
-	if(hi - lo == 2){
-		process** p1;
-		process** p2;
-		process* p3 = *list;
-		process* p4 = *list;
-		process temp;
-		for(int x = 0; x < lo - 1; x++){
-			p3 = p3->next;
+	if(hi - lo < 1) return;
+	if(hi - lo == 1){
+		process* p1 = *list;
+		process* p2 = *list;
+		process temp; process temp2;
+		for(int x = 0; x < lo - 1; x++) p1 = p1->next;
+		for(int x = 0; x < hi - 1; x++) p2 = p2->next;
+		if(p2->next == NULL){
+			printf("no swap possible, end of list\n");
+			return;			
 		}
-		p1 = &p3; //problem line, can't get the value address without a bus fault
+		printf("Acquire p1 and 2: ");
+		print_process(*p1->next); print_process(*p2->next);
+		if(p1->next->arrival_time > p2->next->arrival_time){
+			printf("HI: %d LO: %d\n", hi, lo);
+			printf("Swapping...\n");
+			p1->next = p2->next;
+			if(p1->next->next == NULL){
+				p2->next = NULL; // FIX FOR EDGE CASE?
+				p1->next = p2;
+				return;
+			}
+			temp = *p1->next->next;
+			*p2->next = temp;
+			p1->next = p2;
+			printf("After swap: \n");
+			print_process(*p1->next);
+			print_process(*p2->next);
 
-		for(int x= 0; x < hi - 1; x++){
-			p4 = p4->next;
 		}
-		p2 = &p4;
-		printf("p1 next: %d p2 next: %d\n", (*p1)->next->arrival_time, (*p2)->next->arrival_time);
-		if((*p1)->next->arrival_time > (*p2)->next->arrival_time){
-			printf("swapping: ");
-			print_process(*((*p2)->next));
-			print_process(*((*p1)->next));
-
-			temp = *((*p2)->next);
-			(*p2)->next = (*p1)->next;
-			(*p1)->next = temp.next;
-
-			p3 = (*p1)->next->next;
-			(*p1)->next->next = (*p2)->next->next;
-			*((*p2)->next->next) = temp;
-		}
+		p1 = NULL;
+		p2 = NULL;
 		return;
 	}
-
 	sort_pll_r(&(*list), lo, (hi+lo) / 2);
 	sort_pll_r(&(*list), ((hi+lo) / 2) + 1, hi);
 	return;
