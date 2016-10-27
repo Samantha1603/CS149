@@ -19,17 +19,17 @@ void generate_processes(process** list){
 		head->completion_time = (rand() % 5) + 1;
 		head = head->next;
 	}
-	head->next = malloc(sizeof(process));
+	head->next = NULL;
 	//free(head); needed?
 	*list = b_list;
 	return;
 }
 
 void print_ll(process* list){
-	process* head;
+	process* head = list;
 	for(int x = 0; x < NUMBER_PROCESS; x++){
-		if(list == NULL) break;
-		printf("Name: %c Completion Time: %d\n", head->name[0], head->completion_time);
+		if(head == NULL) break;
+		printf("Name: %c \tArrival Time: %d \tCompletion Time: %d\n", head->name[0], head->arrival_time, head->completion_time);
 		head = head->next;
 	}
 }
