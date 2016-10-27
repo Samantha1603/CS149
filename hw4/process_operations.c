@@ -96,16 +96,19 @@ void sort_pll(process* list){
 void sort_pll_r(process** list, int lo, int hi){
 	if(hi - lo <= 1) return;
 	if(hi - lo == 2){
-		process** p1 = &(*list);
-		process** p2 = &(*list);
-		process* p3;
+		process** p1;
+		process** p2;
+		process* p3 = *list;
 		for(int x = 0; x < lo - 1; x++){
-			*p1 = &(*(*p1)->next);
+			p3 = p3->next;
 		}
+		p1 = &p3;
+		p3 = *list;
 		for(int x= 0; x < hi - 1; x++){
-			*p2 = &(*(*p2)->next);
+			p3 = p3->next;
 		}
-		if((*p1)->next->arrival_time > (*p2)->next->arrival_time){
+		p2 = &p3;
+		/*if((*p1)->next->arrival_time > (*p2)->next->arrival_time){
 			printf("swapping: ");
 			print_process(*((*p2)->next));
 			print_process(*((*p1)->next));
@@ -117,7 +120,7 @@ void sort_pll_r(process** list, int lo, int hi){
 			p3 = (*p1)->next->next;
 			(*p1)->next->next = (*p2)->next->next;
 			(*p2)->next->next = p3;
-		}
+		}*/
 		return;
 	}
 	printf("Hi: %d, Lo: %d", hi, lo);
