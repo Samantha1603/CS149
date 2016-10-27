@@ -88,7 +88,7 @@ void sort_pll(process* list){
 	// All pointers should be set up start sorting. We will be comparing based on next.
 	//  This eliminates the need for a "previous" pointer
 	sort_pll_r(&b_list, 0, counter);
-	//sort_pll_r(&b_list, (counter / 2), counter);
+	sort_pll_r(&b_list, (counter / 2), counter);
 	print_ll(b_list);
 	return;
 }
@@ -99,32 +99,33 @@ void sort_pll_r(process** list, int lo, int hi){
 		process** p1;
 		process** p2;
 		process* p3 = *list;
+		process* p4 = *list;
+		process temp;
 		for(int x = 0; x < lo - 1; x++){
 			p3 = p3->next;
 		}
-		p1 = &p3;
-		p3 = *list;
+		p1 = &p3; //problem line, can't get the value address without a bus fault
+
 		for(int x= 0; x < hi - 1; x++){
-			p3 = p3->next;
+			p4 = p4->next;
 		}
-		p2 = &p3;
+		p2 = &p4;
+		printf("p1 next: %d p2 next: %d\n", (*p1)->next->arrival_time, (*p2)->next->arrival_time);
 		if((*p1)->next->arrival_time > (*p2)->next->arrival_time){
 			printf("swapping: ");
 			print_process(*((*p2)->next));
 			print_process(*((*p1)->next));
 
-			p3 = (*p2)->next;
+			temp = *((*p2)->next);
 			(*p2)->next = (*p1)->next;
-			(*p1)->next = p3->next;
+			(*p1)->next = temp->next;
 
 			p3 = (*p1)->next->next;
 			(*p1)->next->next = (*p2)->next->next;
-			(*p2)->next->next = p3;
+			(*p2)->next->next = temp;
 		}
 		return;
 	}
-	printf("Hi: %d, Lo: %d\n", hi, lo);
-	printf("Hi After %d Lo: %d\n", (hi-lo) / 2, lo);
 
 	sort_pll_r(&(*list), lo, (hi+lo) / 2);
 	sort_pll_r(&(*list), ((hi+lo) / 2) + 1, hi);
