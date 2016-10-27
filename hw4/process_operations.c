@@ -39,8 +39,8 @@ void print_process(process p){
 	printf("\n Completion Time: %d Arrival Time: %d Process Name: %c%c\n", p.completion_time, p.arrival_time, p.name[0], p.name[1]);
 }
 
-void sort_pll(process* list){
-	process* b_list = list;
+void sort_pll(process** list){
+	process* b_list = *list;
 	process* head = b_list;
 	process* p = &*head;
 	process* lo = &*head; // no need for previous because lo doesnt compare, and next is already available in the struct
@@ -83,13 +83,12 @@ void sort_pll(process* list){
 		p = hi;
 		hi = lo;
 		lo = p;
-		b_list = lo;
+		*list = lo;
 	}	
 	// All pointers should be set up start sorting. We will be comparing based on next.
 	//  This eliminates the need for a "previous" pointer
-	sort_pll_r(&b_list, 0, counter);
-	sort_pll_r(&b_list, (counter / 2), counter);
-	print_ll(b_list);
+	//sort_pll_r(&b_list, 0, counter);
+	//sort_pll_r(&b_list, (counter / 2), counter);
 	return;
 }
 
@@ -118,11 +117,11 @@ void sort_pll_r(process** list, int lo, int hi){
 
 			temp = *((*p2)->next);
 			(*p2)->next = (*p1)->next;
-			(*p1)->next = temp->next;
+			(*p1)->next = temp.next;
 
 			p3 = (*p1)->next->next;
 			(*p1)->next->next = (*p2)->next->next;
-			(*p2)->next->next = temp;
+			*((*p2)->next->next) = temp;
 		}
 		return;
 	}
