@@ -87,8 +87,8 @@ void sort_pll(process* list){
 	}	
 	// All pointers should be set up start sorting. We will be comparing based on next.
 	//  This eliminates the need for a "previous" pointer
-	sort_pll_r(&b_list, 0, counter / 2);
-	sort_pll_r(&b_list, (counter / 2) + 1, counter);
+	sort_pll_r(&b_list, 0, counter);
+	//sort_pll_r(&b_list, (counter / 2), counter);
 	print_ll(b_list);
 	return;
 }
@@ -108,7 +108,7 @@ void sort_pll_r(process** list, int lo, int hi){
 			p3 = p3->next;
 		}
 		p2 = &p3;
-		/*if((*p1)->next->arrival_time > (*p2)->next->arrival_time){
+		if((*p1)->next->arrival_time > (*p2)->next->arrival_time){
 			printf("swapping: ");
 			print_process(*((*p2)->next));
 			print_process(*((*p1)->next));
@@ -120,11 +120,13 @@ void sort_pll_r(process** list, int lo, int hi){
 			p3 = (*p1)->next->next;
 			(*p1)->next->next = (*p2)->next->next;
 			(*p2)->next->next = p3;
-		}*/
+		}
 		return;
 	}
-	printf("Hi: %d, Lo: %d", hi, lo);
-	sort_pll_r(&(*list), lo, (hi-lo) / 2);
-	sort_pll_r(&(*list), ((hi-lo) / 2) + 1, hi);
+	printf("Hi: %d, Lo: %d\n", hi, lo);
+	printf("Hi After %d Lo: %d\n", (hi-lo) / 2, lo);
+
+	sort_pll_r(&(*list), lo, (hi+lo) / 2);
+	sort_pll_r(&(*list), ((hi+lo) / 2) + 1, hi);
 	return;
 }
