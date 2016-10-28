@@ -5,7 +5,9 @@
 void generate_pageList(page** list);
 
 
-void print_pagesLL(page* llist);
+void print_pageLinkedList(page* list);
 
 //Returns true if we find 4 free pages and we mark those 4 pages as not available. 
 bool find_4FreePages(page* llist);
+
+#endif
