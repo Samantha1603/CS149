@@ -33,7 +33,7 @@ bool find_4FreePages(page* llist)
 	{
 	for(int x = 1; x < NUMBER_PAGES; x++) //iterate through linked list of pages to find 4 available pages.
 	{
-          if(head->status = 0)
+          if(head->status == 0)
           {
           	pagesFound++;
           	head->status = 1;
