@@ -1,0 +1,18 @@
+Generate Workload
+	Rename page_size to process_size_in_pages to match schema in directions
+		Randomly assign each process a size of 5, 11, 17, and 31 MB (1 page = 1 MB)
+	Rename completion_time to service_duration to match schema in directions
+Free Page List
+	Create a linked list with initial value of 100 nodes
+Paging
+	Make a function to determine what page will be referenced next
+Process Execution
+	If four pages or more are available from the free page list, start a new job
+	All processes start at page0
+	After 100ms, there is a reference to another memory location
+	Record these reference statistics <time-stamp in seconds, process Name, page-referenced, Page-in-memory, which process/page number will be evicted if needed> 
+Simulation 	Run simulation 5 times for each page replacement algorithm
+	Calculate average hit/miss ratio
+	Create memory map
+	Print record when process is swapped in or completed
+	Print average number of processes swapped in
