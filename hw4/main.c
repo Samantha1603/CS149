@@ -11,7 +11,6 @@
 #define PAGE_SIZE 1
 
 int main(){
-	srand(time(NULL));
 	
 	srand(time(NULL));
 	// Generate Processes
@@ -27,8 +26,15 @@ int main(){
 	generate_pageList(&pllist);
 	print_pagesLL(pllist);
 
-	printf("\n\n\n\n\n\n");
-	removeAPage(&pllist, 4);
+	printf("\n\n\n");
+	//removeAPage(&pllist, 4); // remove at position 4 test
+	//print_pagesLL(pllist);
+
+	printf("\nADDING NODE\n\n");
+	page* newPage = malloc(sizeof(page));
+	newPage->pageNumber = 100;
+	addPageToMemory(&pllist, newPage);
 	print_pagesLL(pllist);
+
 	return 0;
 }

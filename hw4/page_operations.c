@@ -11,16 +11,22 @@ void generate_pageList(page** list)
 	b_list = malloc(sizeof(page));
 	b_list->next = malloc(sizeof(page));
 	b_list->status = 0;
+	b_list->pageNumber = 0;
+
 	head = b_list->next;
 
 	for(int x = 1; x < NUMBER_PAGES; x++){ //create/initialize page list with 100 avaliable pages.
-		
+		int random = (rand() % 100) + 1; // 1 -> 100
+
 		head->next = malloc(sizeof(page));
+		head->status = 0;
+		head->pageNumber = 0;
 		head = head->next;
 	}
 	head->next = NULL;
 	//free(head); needed?
 	*list = b_list;
+
 	return;
 }
 
@@ -49,35 +55,51 @@ bool find_4FreePages(page* llist)
 // Remove the page at a given position
 void removeAPage(page** list, int nodeIndex) 
 {
-
-	page* previous;
+	page* prev;
 	page* temp;
 
 	if (list == NULL || *list == NULL || nodeIndex < 0) return;
 
-	if (nodeIndex == 0) {
+	if (nodeIndex == 0) { // Remove head
 		temp = (*list)->next;
 		free(*list);
 		*list = temp;
+
 	} else {
-		previous = *list;
+		prev = *list;
 		temp = (*list)->next;
 
+		// Go to the node position 
 		for (int x = 1; x < nodeIndex; x++) {
-			previous = temp;
+			prev = temp;
 			temp = temp->next;
 			if (temp == NULL) return;
 		}
-
-		previous->next= temp->next; // Connection previous to the node after deleted node
-		free(temp);
+		prev->next= temp->next; // Skip over the node to be removed
+		free(temp); // Remove the node waiting for removal
 	}
 }
 
-
-void addPageToMemory() 
+// Add page to first available position, starting from head node
+void addPageToMemory(page** list, page* pageToInsert) 
 {
+	page* current;
+	page* temp;
+	current = *list;
 
+	if (current->status == 0) { //Insert at head
+		temp = current;
+		*list = pageToInsert; // Change head to new page
+		pageToInsert->next = temp;
+	} else {
+		// Loop as long as current node is not occupied 
+		while (current->next->status && current->next != NULL) {
+			current = current->next;
+		}
+		temp = current->next;
+		current->next = pageToInsert;
+		pageToInsert->next = temp; 
+	}
 }
 
 // Created based on suggested procedure for locality of reference
@@ -99,7 +121,7 @@ void print_pagesLL(page* llist) {
 	page* head = llist;
 	for(int x = 0; x < NUMBER_PAGES; x++){
 		if(head == NULL) break;
-		printf("Status: %d \t\n", head->status);
+		printf("Status: %d \t Page Number: %d\n", head->status, head->pageNumber);
 		head = head->next;
 	}
 }
