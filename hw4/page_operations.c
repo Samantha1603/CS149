@@ -18,6 +18,7 @@ void generate_pageList(page** list)
 	for(int x = 1; x < NUMBER_PAGES; x++){ //create/initialize page list with 100 avaliable pages.
 		
 		head->next = malloc(sizeof(page));
+		head->status = 0;
 		head = head->next;
 	}
 	head->next = NULL;
@@ -25,10 +26,20 @@ void generate_pageList(page** list)
 	*list = b_list;
 	return;
 }
+void print_pageLinkedList(page* list){
+	page* head = list;
+	for(int x = 0; x < NUMBER_PAGES; x++){
+		if(head == NULL) break;
+		printf("Page: %d\n",head->status);
+		head = head->next;
+	}
+}
 
-bool find_4FreePages(page* llist)
+/*bool find_4FreePages(page* llist)
 {
 	int pagesFound = 0;
+	page* head;
+
 	while(pagesFound < 4)
 	{
 	for(int x = 1; x < NUMBER_PAGES; x++) //iterate through linked list of pages to find 4 available pages.
@@ -49,5 +60,5 @@ bool find_4FreePages(page* llist)
 else{
  return false;
 }
-}
+}*/
 
