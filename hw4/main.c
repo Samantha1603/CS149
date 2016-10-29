@@ -24,7 +24,8 @@ int main(){
 	printf("\nEND OF PAGES\n");
 	print_ll(llist);
 	printf("\n\nAfter sort\n\n");
-	sort_pll(llist);
+	sort_pll(&llist);
+	printf("Outside Method \n \n");
 	print_ll(llist);
 	return 0;
 }
