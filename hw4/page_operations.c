@@ -4,10 +4,7 @@
 #include <stdbool.h>
 #include "shared.h"
 
-
-
-void generate_pageList(page** list)
-{
+void generate_pageList(page** list){
 	page* b_list;
 	page* head;
 	b_list = malloc(sizeof(page));
@@ -16,7 +13,7 @@ void generate_pageList(page** list)
 	head = b_list->next;
 
 	for(int x = 1; x < NUMBER_PAGES; x++){ //create/initialize page list with 100 avaliable pages.
-		
+		head->process_owner = NULL;
 		head->next = malloc(sizeof(page));
 		head->status = 0;
 		head = head->next;
@@ -35,30 +32,28 @@ void print_pageLinkedList(page* list){
 	}
 }
 
-/*bool find_4FreePages(page* llist)
-{
+bool find_4FreePages(page* llist){
 	int pagesFound = 0;
-	page* head;
+	page* head = llist;
 
 	while(pagesFound < 4)
 	{
-	for(int x = 1; x < NUMBER_PAGES; x++) //iterate through linked list of pages to find 4 available pages.
-	{
-          if(head->status == 0)
-          {
-          	pagesFound++;
-          	head->status = 1;
+		for(int x = 1; x < NUMBER_PAGES; x++) //iterate through linked list of pages to find 4 available pages.
+		{
+	        if(head->status == 0)
+	        {
+	          pagesFound++;
+	          head->status = 1;
+	        }
+	        head = head->next;
+		}
+	}
 
-          }
-          head = head->next;
+	if(pagesFound == 4){
+		return true;
+	}	
+	else{
+ 	return false;
 	}
 }
-		if(pagesFound == 4){
-			return true;
-		}
-		
-else{
- return false;
-}
-}*/
 
