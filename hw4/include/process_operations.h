@@ -22,12 +22,19 @@ void generate_processes(process** list);
 
 /**
  * Sorts a linked list of processes by arrival time
- * NOT FUNCTIONAL
+ * performs merge sort
  * @param list linked list to sort, starting at first process in the list
  */
 void sort_pll(process** list);
 
-process* sort_pll_r(process* list, int lo, int hi);
+/**
+ * sort recursive call
+ * @param  list list to sort
+ * @param  lo   low bounds
+ * @param  hi   high bounds
+ * @return      sorted list
+ */
+static process* sort_pll_r(process* list, int lo, int hi);
 
 static void swap(process* a, process* b);
 
