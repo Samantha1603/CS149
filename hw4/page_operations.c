@@ -22,6 +22,7 @@ void generate_pageList(page** list){
 		head->next = malloc(sizeof(page));
 		head->status = 0;
 		head->pageNumber = 0;
+		head->process_owner = NULL;
 		head = head->next;
 	}
 	head->next = NULL;
@@ -66,7 +67,7 @@ void removeAPage(page** list, int nodeIndex)
 
 	if (nodeIndex == 0) { // Remove head
 		temp = (*list)->next;
-		free(*list);
+		free(*list);// COULD CAUSE PROBLEMS. 9/10 WILL CAUSE PROBLEMS
 		*list = temp;
 
 	} else {
@@ -85,7 +86,7 @@ void removeAPage(page** list, int nodeIndex)
 }
 
 // Add page to first available position, starting from head node
-void addPageToMemory(page** list, page* pageToInsert) 
+void addPageToMemory(page** list, page* pageToInsert, process* p1) 
 {
 	page* current;
 	page* temp;
@@ -96,6 +97,7 @@ void addPageToMemory(page** list, page* pageToInsert)
 		*list = pageToInsert; // Change head to new page
 		pageToInsert->next = temp;
 		pageToInsert->status = true; // change status to true when occupied
+		pageToInsert->process_owner = p1;
 	} else {
 		// Loop as long as current node is not occupied 
 		while (current->next->status && current->next != NULL) {
@@ -130,7 +132,9 @@ void print_pagesLL(page* llist) {
 	page* head = llist;
 	for(int x = 0; x < NUMBER_PAGES; x++){
 		if(head == NULL) break;
-		printf("Status: %d \t Page Number: %d\n", head->status, head->pageNumber);
+		printf("Status: %d \t Page Number: %d", head->status, head->pageNumber);
+		if(head->status == true) printf(" Page Owner: %c\n", head->process_owner->name[0]);
+		else printf(" Page Owner: Free\n");
 		head = head->next;
 	}
 }

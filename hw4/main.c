@@ -33,7 +33,7 @@ int main(){
 	printf("\nADDING NODE\n\n");
 	page* newPage = malloc(sizeof(page));
 	newPage->pageNumber = 100;
-	addPageToMemory(&pllist, newPage);
+	addPageToMemory(&pllist, newPage, llist);
 	print_pagesLL(pllist);
 
 	return 0;

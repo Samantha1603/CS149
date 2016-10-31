@@ -17,6 +17,19 @@ void generate_processes(process** list){
 		head->name[0] = 'A' + ( x % 26 );
 		head->next = malloc(sizeof(process));
 		head->arrival_time = rand() % TOTAL_TIME;
+		head->page_size = rand() % 4;
+		switch(head->page_size){
+			case 0: head->page_size = 5;
+					break;
+			case 1: head->page_size = 11;
+					break;
+			case 2: head->page_size = 17;
+					break;
+			case 3: head->page_size = 31;
+					break;
+			default: head->page_size = 5;
+					break;
+		}
 		head->completion_time = (rand() % 5) + 1;
 		head = head->next;
 	}
