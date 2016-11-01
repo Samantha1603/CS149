@@ -21,6 +21,7 @@ struct page{
 	int status; //All 100 pages are initially set to available which is 0. 
 					//Set status to 1 for not available page.
 	struct page* next; 
+	
 };
 
 typedef struct page page;
