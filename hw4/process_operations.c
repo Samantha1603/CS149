@@ -126,6 +126,21 @@ process* sort_pll_r(process* list, int lo, int hi){
 	return p_tot;
 }
 
+//returns the next referenced page number
+int nextReferencedPage(int currentPage, int processSize){
+    int r = rand() % 11;
+    int change;
+    if(r<7){
+        //70% chance the change is -1, 0 or 1
+        change = (rand() % 3) - 1;
+    }
+    else{
+        //30% chance the change is between 2 and process size
+        change = (rand() % (processSize-3)) + 2;
+    }
+    return (currentPage+change) % processSize;
+}
+
 static void swap(process* a, process* b){
 	if(a->completion_time == 0 || b->completion_time == 0) return;
 	process temp = *a;
