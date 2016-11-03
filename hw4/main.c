@@ -4,6 +4,7 @@
 #include "shared.h"
 #include "process_operations.h"
 #include "page_operations.h"
+#include "FIFO.h"
 
 /// Amount of memory in MB
 #define MEMORY 100
@@ -26,15 +27,6 @@ int main(){
 	generate_pageList(&pllist);
 	print_pagesLL(pllist);
 
-	printf("\n\n\n");
-	//removeAPage(&pllist, 4); // remove at position 4 test
-	//print_pagesLL(pllist);
-
-	printf("\nADDING NODE\n\n");
-	page* newPage = malloc(sizeof(page));
-	newPage->pageNumber = 100;
-	addPageToMemory(&pllist, newPage, llist);
-	print_pagesLL(pllist);
 
 	return 0;
 }
