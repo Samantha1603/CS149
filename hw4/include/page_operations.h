@@ -14,11 +14,11 @@ void print_pagesLL(page* llist);
 void removeAPage(page** list, int nodeIndex);
 
 // Add a page to the free memory list
-void addPageToMemory(page** list, page* pageToInsert, process* p1, int inMemoryTime);
+void addPageToMemory(page** list, page* pageToInsert, process* p1, int inMemoryTime, int pageNumber);
 
 // Returns true if we find 4 free pages and we mark those 4 pages as not available. 
 bool find_4FreePages(page* llist);
 
 // Generate page reference based on locality of reference
-int getPageReference();
+int getPageReference(int pageSize, int lastReference);
 #endif

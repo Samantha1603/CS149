@@ -86,7 +86,7 @@ void removeAPage(page** list, int nodeIndex)
 }
 
 // Add page to first available position, starting from head node
-void addPageToMemory(page** list, page* pageToInsert, process* p1, int inMemoryTime) 
+void addPageToMemory(page** list, page* pageToInsert, process* p1, int inMemoryTime, int pageNumber) 
 {
 	page* current;
 	page* temp;
@@ -96,10 +96,6 @@ void addPageToMemory(page** list, page* pageToInsert, process* p1, int inMemoryT
 		temp = current;
 		*list = pageToInsert; // Change head to new page
 		pageToInsert->next = temp->next;
-		pageToInsert->status = 1; // change status to true when occupied
-		pageToInsert->inMemoryTime = inMemoryTime; // time page added to memory
-		pageToInsert->process_owner = p1;
-
 	} else {
 		// Loop as long as current node is occupied 
 		while (current->next->status != 0) {
@@ -107,25 +103,29 @@ void addPageToMemory(page** list, page* pageToInsert, process* p1, int inMemoryT
 		}
 
 		temp = current->next->next;
-		pageToInsert->status = 1; // change status to true when occupied
-		pageToInsert->inMemoryTime = inMemoryTime; // time page added to memory
-		pageToInsert->process_owner = p1;
-
 		current->next = pageToInsert;
 		pageToInsert->next = temp; 
 	}
+	pageToInsert->status = 1; // change status to true when occupied
+	pageToInsert->inMemoryTime = inMemoryTime; // time page added to memory
+	pageToInsert->process_owner = p1;
+	pageToInsert->pageNumber = pageNumber;
+	p1->num_page_in_freelist++;
 }
 
 // Created based on suggested procedure for locality of reference
-int getPageReference() 
+int getPageReference(int pageSize, int lastReference) 
 {
 	int random = rand() % 11; // 0 -> 10
 	int refNum = 0;
 
 	if(random < 7) {
-		refNum = (rand() % 3) - 1; // -1 -> 1
+		refNum = lastReference + (rand() % 3) - 1; // -1 -> 1
+		if (refNum < 0) refNum = 0; // wrap around
+
 	} else if(random >= 7) {
-		refNum = (rand() % 8) + 2; // 2 -> 9
+		refNum = lastReference + (rand() % 8) + 2; // 2 -> 9
+		if (refNum > pageSize) refNum = 0; // wrap around 
 	}
 	return refNum;
 }

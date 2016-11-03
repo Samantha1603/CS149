@@ -12,12 +12,14 @@ void generate_processes(process** list){
 	b_list->name[0] = 'A';
 	b_list->arrival_time = rand() % TOTAL_TIME;
 	b_list->completion_time = (rand() % 5) + 1;
+	b_list->num_page_in_freelist = 0;
 	head = b_list->next;
 	for(int x = 1; x < NUMBER_PROCESS; x++){
 		head->name[0] = 'A' + ( x % 26 );
 		head->next = malloc(sizeof(process));
 		head->arrival_time = rand() % TOTAL_TIME;
 		head->page_size = rand() % 4;
+		head->num_page_in_freelist = 0;
 		switch(head->page_size){
 			case 0: head->page_size = 5;
 					break;
