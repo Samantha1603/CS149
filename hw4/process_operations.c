@@ -18,7 +18,8 @@ void generate_processes(process** list){
 	for(int x = 0; x < NUMBER_PROCESS; x++){
 		head->name[0] = 'A' + ( x % 26 );
 		head->next = malloc(sizeof(process));
-		head->arrival_time = rand() % TOTAL_TIME;
+		//head->arrival_time = (rand() % TOTAL_TIME) * 10;
+		head->arrival_time = (rand() % 10) * 10;
 		head->page_size = rand() % 4;
 		head->num_page_in_freelist = 0;
 		switch(head->page_size){
