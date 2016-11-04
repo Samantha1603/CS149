@@ -25,6 +25,8 @@ bool find_4FreePages(page* llist);
 // Generate page reference based on locality of reference
 int getPageReference(int pageSize, int lastReference);
 
+void print_process_pages(process p);
+
 /**
  * returns pointer to first free page in list
  * @param  list list of pages

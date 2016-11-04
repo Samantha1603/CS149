@@ -85,6 +85,11 @@ page* findFreePage(page *list, int length){
 // Add page to first available position, starting from head node
 void addPageToMemory(page** list, process* p1, int inMemoryTime, int pageNumber) 
 {
+	// Check if page is already in memory
+	for(int x = 0; x < p1->num_page_in_freelist ; x++){
+		if(p1->pagesowned[x].pageNumber == pageNumber) return;
+	}
+	// End Check
 	page* current;
 	page* temp;
 	current = *list;
@@ -92,7 +97,6 @@ void addPageToMemory(page** list, process* p1, int inMemoryTime, int pageNumber)
 	while(current->status == 1){
 		current = current->next;
 	}
-
 	insert.status=1;
 	insert.inMemoryTime = inMemoryTime;
 	insert.process_owner = p1;
