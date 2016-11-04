@@ -27,11 +27,11 @@ struct page{
 						//Set status to 1 for not available page.
 	int pageNumber; 	// Page number when added to free memory
 	int inMemoryTime; 	// Time when added to free memory
-	bool isInMemory;	// Check to see if this page is in memory 
+	//bool isInMemory;	// Check to see if this page is in memory 
 	struct page* next; 
 };
 
 typedef struct page page;
 
-
+int quanta;
 #endif
