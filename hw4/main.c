@@ -29,13 +29,17 @@ int main(){
 
 	//sample insert
 	//addPageToMemory(&fp_list, llist, quanta, 3);
-	addPageToMemory(&fp_list, &llist[1], quanta, 3);
-	addPageToMemory(&fp_list, &llist[1], quanta, 4);
-	addPageToMemory(&fp_list, &llist[1], quanta, 3);
-	print_process_pages(llist[1]);
+	for(int x = 0; x < NUMBER_PAGES; x++){
+		addPageToMemory(&fp_list, &llist[x], quanta, llist[x].last_reference);
+		llist[x].last_reference = getPageReference(llist[x].page_size, llist[x].last_reference);
+	}
+	//addPageToMemory(&fp_list, &llist[1], quanta, 3);
+	//addPageToMemory(&fp_list, &llist[1], quanta, 4);
+	//addPageToMemory(&fp_list, &llist[1], quanta, 3);
+	//print_process_pages(llist[1]);
 	//end sample insert
 
-	//print_pagesLL(fp_list);
+	print_pagesLL(fp_list);
 
 
 	return 0;
