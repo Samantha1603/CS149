@@ -12,34 +12,48 @@ int getOldestPageFIFO() {
 
 void runFIFO(process** prolist, page** pagelist) {
 
-	int currentQuanta = 0;
+	int currentQuanta = 100;
 	int currentPageReference = 0;
 	process* process_head = *prolist;
 	page* page_head = *pagelist;
 
 	// hm just solo process one at a time for now. we need threads for all the processes to run at once
+
 	for (int i = 0; i < NUMBER_PROCESS; i++) {
 		printf("\n\n COMPLETION TIME: %d \n", process_head->completion_time);
+		//printf("\nQUANTA: %f\n", currentQuanta);
 
-		while (process_head->completion_time > 0) {
+		if (process_head->arrival_time <= currentQuanta) {
 
-			if (process_head->num_page_in_freelist <= 4) {
+			if(find_4FreePages) {
+				// Found 4 free pages. Can insert into free list.
 
-				addPageToMemory(pagelist, page_head, process_head, currentQuanta, currentPageReference);
-				process_head->completion_time -= 1;
-				currentQuanta++;
-				currentPageReference = getPageReference(process_head->page_size, currentPageReference); // The next page to reference
+				if (process_head->pagesowned[0].status == 0) { // First referencing made
+					printf("\n\n FIRST REFERENCE \n\n");
+					print_pagesLL(*pagelist);
+					currentPageReference = 0;
+				} else {
+					print_pagesLL(*pagelist);
+					currentPageReference = getPageReference(process_head->page_size, currentPageReference); // The next page to reference
+				}
 
-				page_head = page_head->next;
+				addPageToMemory(pagelist, process_head, currentQuanta, currentPageReference);
+				process_head->completion_time -= 0.1; 
+
+			} else {
+				printf("\n\n NO FREE FOUR PAGES \n\n");
+				// Do replacement algorithm
 			}
-		}
-		print_pagesLL(*pagelist);
+		} 
+		
+		currentQuanta += 0.1;
+		//printf("\nQUANTA: %f\n", currentQuanta);
+		page_head = page_head->next;
+		process_head = process_head->next;
 
 		if (currentQuanta >= TOTAL_TIME) {
 			break;
 		}
-
-		process_head = process_head->next;
 	}
 }
 

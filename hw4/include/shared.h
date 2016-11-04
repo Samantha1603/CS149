@@ -27,7 +27,7 @@ struct page{
 	int status;			//All 100 pages are initially set to available which is 0 when created
 						//Set status to 1 for not available page.
 	int pageNumber; 	// Page number when added to free memory
-	int inMemoryTime; 	// Time when added to free memory
+	double inMemoryTime; 	// Time when added to free memory
 	//bool isInMemory;	// Check to see if this page is in memory 
 	struct page* next; 
 	int frequency; //this is the frequency or count that a page is needed in memory. Every algorithm might use this differently. 
