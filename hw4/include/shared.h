@@ -14,7 +14,7 @@ struct process{
 	int arrival_time; // 
 	int completion_time; // Can be 1, 2, 3, 4, or 5
 	int num_page_in_freelist; // Keep track of many of this process is currently in free list. Max = 4
-	struct page* pagesowned[4]; //4 page pointers to the 4 possible pages in memory
+	struct page* pagesowned; //4 page pointers to the 4 possible pages in memory
 	struct process* next; // makes possible to create linked list
 };
 
@@ -27,12 +27,12 @@ struct page{
 						//Set status to 1 for not available page.
 	int pageNumber; 	// Page number when added to free memory
 	int inMemoryTime; 	// Time when added to free memory
-	bool isInMemory;	// Check to see if this page is in memory 
+	//bool isInMemory;	// Check to see if this page is in memory 
 	struct page* next; 
 	
 };
 
 typedef struct page page;
 
-
+int quanta;
 #endif

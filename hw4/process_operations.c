@@ -33,6 +33,7 @@ void generate_processes(process** list){
 					break;
 		}
 		head->completion_time = (rand() % 5) + 1;
+		head->pagesowned = calloc(head->page_size, sizeof(page));
 		head = head->next;
 	}
 	head->next = NULL;
