@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "shared.h"
+#include "page_operations.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -17,7 +18,6 @@ void generate_pageList(page** list){
 	head = b_list->next;
 
 	for(int x = 1; x < NUMBER_PAGES; x++){ //create/initialize page list with 100 avaliable pages.
-		int random = (rand() % 100) + 1; // 1 -> 100 UNUSED?? LEFT IN FOR MERGE
 		head->process_owner = NULL;
 		head->next = malloc(sizeof(page));
 		head->status = 0;
@@ -86,7 +86,7 @@ void removeAPage(page** list, int nodeIndex)
 }
 
 // Add page to first available position, starting from head node
-void addPageToMemory(page** list, page* pageToInsert, process* p1) 
+void addPageToMemory(page** list, page* pageToInsert, process* p1, int inMemoryTime, int pageNumber) 
 {
 	page* current;
 	page* temp;
@@ -95,30 +95,37 @@ void addPageToMemory(page** list, page* pageToInsert, process* p1)
 	if (current->status == 0) { //Insert at head
 		temp = current;
 		*list = pageToInsert; // Change head to new page
-		pageToInsert->next = temp;
-		pageToInsert->status = true; // change status to true when occupied
-		pageToInsert->process_owner = p1;
+		pageToInsert->next = temp->next;
 	} else {
-		// Loop as long as current node is not occupied 
-		while (current->next->status && current->next != NULL) {
+		// Loop as long as current node is occupied 
+		while (current->next->status != 0) {
 			current = current->next;
 		}
-		temp = current->next;
+
+		temp = current->next->next;
 		current->next = pageToInsert;
 		pageToInsert->next = temp; 
 	}
+	pageToInsert->status = 1; // change status to true when occupied
+	pageToInsert->inMemoryTime = inMemoryTime; // time page added to memory
+	pageToInsert->process_owner = p1;
+	pageToInsert->pageNumber = pageNumber;
+	p1->num_page_in_freelist++;
 }
 
 // Created based on suggested procedure for locality of reference
-int getPageReference() 
+int getPageReference(int pageSize, int lastReference) 
 {
 	int random = rand() % 11; // 0 -> 10
 	int refNum = 0;
 
 	if(random < 7) {
-		refNum = (rand() % 3) - 1; // -1 -> 1
+		refNum = lastReference + (rand() % 3) - 1; // -1 -> 1
+		if (refNum < 0) refNum = 0; // wrap around
+
 	} else if(random >= 7) {
-		refNum = (rand() % 8) + 2; // 2 -> 9
+		refNum = lastReference + (rand() % 8) + 2; // 2 -> 9
+		if (refNum > pageSize) refNum = 0; // wrap around 
 	}
 	return refNum;
 }

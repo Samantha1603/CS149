@@ -13,6 +13,7 @@ struct process{
 	int page_size; // Can be 5, 11, 17, and 31
 	int arrival_time; // 
 	int completion_time; // Can be 1, 2, 3, 4, or 5
+	int num_page_in_freelist; // Keep track of many of this process is currently in free list. Max = 4
 	struct page* pagesowned[4]; //4 page pointers to the 4 possible pages in memory
 	struct process* next; // makes possible to create linked list
 };
