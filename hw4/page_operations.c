@@ -69,7 +69,7 @@ void removeAPage(page** list, int nodeIndex)
 			temp = temp->next;
 			if (temp == NULL) return;
 		}
-		temp->status = -1;
+		temp->status = 0;
 		return;
 }
 
@@ -88,6 +88,8 @@ void addPageToMemory(page** list, process* p1, int inMemoryTime, int pageNumber)
 	for(int x = 0; x < p1->num_page_in_freelist ; x++){
 		if(p1->pagesowned[x].pageNumber == pageNumber) return;
 	}
+	if(!find_4FreePages) return; // this is where page replacement algorithms should begin
+	//They should decide what to do with pages once memory fills
 	// End Check
 	page* current;
 	page* temp;
