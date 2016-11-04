@@ -111,6 +111,11 @@ void addPageToMemory(page** list, page* pageToInsert, process* p1, int inMemoryT
 	pageToInsert->process_owner = p1;
 	pageToInsert->pageNumber = pageNumber;
 	p1->num_page_in_freelist++;
+	for(int x = 0; x < p1->page_size; x++){
+		if(p1->pagesowned[x].isInMemory == false) p1->pagesowned[x] = *pageToInsert;
+		break;
+	}
+	return;
 }
 
 // Created based on suggested procedure for locality of reference

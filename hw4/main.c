@@ -16,6 +16,7 @@ int main(){
 	
 	srand(time(NULL));
 	// Generate Processes
+	quanta = 0;
 	process* llist;
 	page* pagelinkedlist;
 	generate_processes(&llist);
@@ -23,9 +24,9 @@ int main(){
 	generate_pageList(&pagelinkedlist);
 	print_ll(llist);
 
-	page* pllist;
-	generate_pageList(&pllist);
-	print_pagesLL(pllist);
+	page* fp_list; // free page list
+	generate_pageList(&fp_list);
+	print_pagesLL(fp_list);
 
 
 	return 0;
