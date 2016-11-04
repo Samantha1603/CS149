@@ -26,6 +26,12 @@ int main(){
 
 	page* fp_list; // free page list
 	generate_pageList(&fp_list);
+
+	//sample insert
+	addPageToMemory(&fp_list, llist, quanta, 3);
+	addPageToMemory(&fp_list, &llist[1], quanta, 3);
+	//end sample insert
+
 	print_pagesLL(fp_list);
 
 
