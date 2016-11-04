@@ -3,6 +3,7 @@
 #include <time.h>
 #include "shared.h"
 #include "process_operations.h"
+#include "page_operations.h"
 
 void generate_processes(process** list){
 	process* b_list;
@@ -12,12 +13,29 @@ void generate_processes(process** list){
 	b_list->name[0] = 'A';
 	b_list->arrival_time = rand() % TOTAL_TIME;
 	b_list->completion_time = (rand() % 5) + 1;
-	head = b_list->next;
-	for(int x = 1; x < NUMBER_PROCESS; x++){
+	b_list->num_page_in_freelist = 0;
+	head = b_list;//->next?
+	for(int x = 0; x < NUMBER_PROCESS; x++){
 		head->name[0] = 'A' + ( x % 26 );
 		head->next = malloc(sizeof(process));
 		head->arrival_time = rand() % TOTAL_TIME;
+		head->page_size = rand() % 4;
+		head->num_page_in_freelist = 0;
+		switch(head->page_size){
+			case 0: head->page_size = 5;
+					break;
+			case 1: head->page_size = 11;
+					break;
+			case 2: head->page_size = 17;
+					break;
+			case 3: head->page_size = 31;
+					break;
+			default: head->page_size = 5;
+					break;
+		}
+		head->last_reference = getPageReference(head->page_size, 0);
 		head->completion_time = (rand() % 5) + 1;
+		head->pagesowned = calloc(head->page_size, sizeof(page));
 		head = head->next;
 	}
 	head->next = NULL;
@@ -124,6 +142,13 @@ process* sort_pll_r(process* list, int lo, int hi){
 	p_tot[(hi-lo) - 1].next = NULL;
 
 	return p_tot;
+}
+
+void print_process_pages(process p){
+	for(int x = 0; x < p.num_page_in_freelist; x++){
+		printf("page number: %d\n", p.pagesowned[x].pageNumber);
+	}
+	return;
 }
 
 static void swap(process* a, process* b){
