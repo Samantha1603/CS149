@@ -142,6 +142,13 @@ process* sort_pll_r(process* list, int lo, int hi){
 	return p_tot;
 }
 
+void print_process_pages(process p){
+	for(int x = 0; x < p.num_page_in_freelist; x++){
+		printf("page number: %d\n", p.pagesowned[x].pageNumber);
+	}
+	return;
+}
+
 static void swap(process* a, process* b){
 	if(a->completion_time == 0 || b->completion_time == 0) return;
 	process temp = *a;
