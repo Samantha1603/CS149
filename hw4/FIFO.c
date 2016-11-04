@@ -12,6 +12,7 @@ int getOldestPageFIFO() {
 
 void runFIFO(process** prolist, page** pagelist) {
 
+	/*
 	int currentQuanta = 0;
 	int currentPageReference = 0;
 	process* process_head = *prolist;
@@ -40,7 +41,7 @@ void runFIFO(process** prolist, page** pagelist) {
 		}
 
 		process_head = process_head->next;
-	}
+	}*/
 }
 
 

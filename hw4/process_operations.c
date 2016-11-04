@@ -34,7 +34,7 @@ void generate_processes(process** list){
 					break;
 		}
 		head->last_reference = 0;
-		head->completion_time = (rand() % 5) + 1;
+		head->completion_time = ((rand() % 5) + 1) * 10; // Unit of quanta. 1 quata = 100ms
 		head->pagesowned = calloc(head->page_size, sizeof(page));
 		head = head->next;
 	}
