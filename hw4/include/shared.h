@@ -29,7 +29,8 @@ struct page{
 	int inMemoryTime; 	// Time when added to free memory
 	//bool isInMemory;	// Check to see if this page is in memory 
 	struct page* next; 
-	
+	int frequency; //this is the frequency or count that a page is needed in memory. Every algorithm might use this differently. 
+	//frequency is reset everytime the page is kicked out of memory. Initialized at zero.
 };
 
 typedef struct page page;
