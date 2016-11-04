@@ -3,6 +3,7 @@
 #include <time.h>
 #include "shared.h"
 #include "process_operations.h"
+#include "page_operations.h"
 
 void generate_processes(process** list){
 	process* b_list;
@@ -13,8 +14,8 @@ void generate_processes(process** list){
 	b_list->arrival_time = rand() % TOTAL_TIME;
 	b_list->completion_time = (rand() % 5) + 1;
 	b_list->num_page_in_freelist = 0;
-	head = b_list->next;
-	for(int x = 1; x < NUMBER_PROCESS; x++){
+	head = b_list;//->next?
+	for(int x = 0; x < NUMBER_PROCESS; x++){
 		head->name[0] = 'A' + ( x % 26 );
 		head->next = malloc(sizeof(process));
 		head->arrival_time = rand() % TOTAL_TIME;
@@ -32,6 +33,7 @@ void generate_processes(process** list){
 			default: head->page_size = 5;
 					break;
 		}
+		head->last_reference = getPageReference(head->page_size, 0);
 		head->completion_time = (rand() % 5) + 1;
 		head->pagesowned = calloc(head->page_size, sizeof(page));
 		head = head->next;
