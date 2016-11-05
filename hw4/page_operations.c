@@ -37,24 +37,22 @@ bool find_4FreePages(page* llist){
 	int pagesFound = 0;
 	page* head = llist;
 
-	while(pagesFound < 4)
+	for(int x = 0; x < NUMBER_PAGES; x++) //iterate through linked list of pages to find 4 available pages.
 	{
-		for(int x = 1; x < NUMBER_PAGES; x++) //iterate through linked list of pages to find 4 available pages.
-		{
-	        if(head->status == 0)
-	        {
-	          pagesFound++;
-	          head->status = 1;
-	        }
-	        head = head->next;
-		}
-	}
+	    if(head->status == 0)
+	    {
+	        pagesFound++;
+	    }
+	    head = head->next;
 
-	if(pagesFound == 4){
+	    if (pagesFound >= 4) break; 
+	}
+	
+	if(pagesFound >= 4){
 		return true;
-	}	
-	else{
- 	return false;
+
+	} else {
+ 		return false;
 	}
 }
 
