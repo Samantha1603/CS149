@@ -6,6 +6,7 @@
 #include "page_operations.h"
 
 void generate_processes(process** list){
+	int y = 0;
 	process* b_list;
 	process* head;
 	b_list = malloc(sizeof(process));
@@ -16,7 +17,13 @@ void generate_processes(process** list){
 	//b_list->num_page_in_freelist = 0;
 	head = b_list;//->next?
 	for(int x = 0; x < NUMBER_PROCESS; x++){
-		head->name[0] = 'A' + ( x % 26 );
+		if (x <= 25) {
+			head->name[0] = 'A' + ( x % 26 );
+		} else if (x <= 50) {
+			head->name[0] = 'a' + ( y % 26 );
+			y++;
+		}
+
 		head->next = malloc(sizeof(process));
 		//head->arrival_time = (rand() % TOTAL_TIME) * 10;
 		head->arrival_time = (rand() % 10) * 10;

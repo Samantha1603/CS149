@@ -18,6 +18,8 @@ int main(){
 	// Generate Processes
 	process* llist;
 	generate_processes(&llist);
+	//print_ll(llist);
+
 	sort_pll(&llist);
 	print_ll(llist);
 

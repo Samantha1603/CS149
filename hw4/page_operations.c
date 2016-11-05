@@ -44,6 +44,8 @@ bool find_4FreePages(page* llist){
 	        pagesFound++;
 	    }
 	    head = head->next;
+
+	    if (pagesFound >= 4) break;
 	}
 	
 	if(pagesFound >= 4){
@@ -143,6 +145,8 @@ void print_pagesLL(page* llist) {
 	page* head = llist;
 	for(int x = 0; x < NUMBER_PAGES; x++){
 		if(head == NULL) break;
+
+
 		printf("Status: %d \t Page Number: %d", head->status, head->pageNumber);
 		if(head->status == 1) printf(" Page Owner: %c\n", head->process_owner->name[0]);
 		else printf(" Page Owner: Free\n");
