@@ -20,7 +20,7 @@ void generate_pageList(page** list){
 	for(int x = 1; x < NUMBER_PAGES; x++){ //create/initialize page list with 100 avaliable pages.
 		head->process_owner = NULL;
 		head->next = malloc(sizeof(page));
-		head->frequency = 0;
+		head->frequency = 1;
 		head->status = 0;
 		head->pageNumber = 0;
 		head->process_owner = NULL;
