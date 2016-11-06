@@ -31,7 +31,7 @@ void startLFU(process** processbyarrivial, page** pagellist)
 page* kickOutLFUPage(page** pagelist, process* p1, int inMemoryTime, int frequency,int pageNumber)
 {
 	page* head = *pagelist;
-	page* leastFrequentPage = malloc(sizeof(page)); //create linked list of pages called "leastFrequentPage"
+	page* leastFrequentPage = malloc(sizeof(page)); 
 	leastFrequentPage->frequency = 1; //this is the lowest default and all pages start at 1 frequency when put in list
 
 	page insert;
@@ -50,7 +50,26 @@ page* kickOutLFUPage(page** pagelist, process* p1, int inMemoryTime, int frequen
 		{
 			leastFrequentPage = head;
 		}
+		head = head->next;
+		if(head->next == NULL) head = *pagelist;
+	} //at this point we have the leastfrequent page in memory.
+
+	//now we need to find the oldest page if there are multiple leastFrequent
+	printf("\nLEAST FREQUENT PAGE: %d FROM PROCESS %c\n", leastFrequentPage->frequency, leastFrequentPage->process_owner->name[0]);
+	head = *pagelist; //start at beginning of pagelist to iterate through again
+	for(int i = 0; i < NUMBER_PAGES; i++)
+	{
+		if(head->frequency == leastFrequentPage.frequency && head->inMemoryTime > leastFrequentPage->inMemoryTime)
+		{
+			//found our new lowest frequency but older page to kick out.
+			leastFrequentPage = head;
+		}
+		head = head->next;
+		//if(head -> next == NULL) head = *pagelist;
+
 	}
+	//At this point we should have the page we want to kick out as leastFrequentPage.
+	
 
 
 }
