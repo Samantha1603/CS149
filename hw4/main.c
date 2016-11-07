@@ -18,15 +18,16 @@ int main(){
 	// Generate Processes
 	process* llist;
 	generate_processes(&llist);
-	//print_ll(llist);
-
-	sort_pll(&llist);
-	print_ll(llist);
+	//sort_pll(&llist);
 
 	page* pagelinkedlist;
 	generate_pageList(&pagelinkedlist);
 
-	
+	//print_ll(llist);
+	print_ll(llist);
+
+	//print_ll(llist);
+
 	runFIFO(&llist, &pagelinkedlist);
 
 	return 0;

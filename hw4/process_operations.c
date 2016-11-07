@@ -44,14 +44,18 @@ void generate_processes(process** list){
 		head->last_reference = 0;
 		head->completion_time = ((rand() % 5) + 1) * 10; // Unit of quanta. 1 quata = 100ms
 		head->pagesowned = calloc(head->page_size, sizeof(page));
+		for (int i = 0; i < head->page_size; i++) {
+			head->pagesowned[i].pageNumber = -1; // Default. -1 is an impossible page so process starts with known value.
+		}
+
+
 		head = head->next;
 	}
-	head->next = NULL;
 	//free(head); needed?
 	*list = b_list;
 	return;
 }
-
+/*
 void print_ll(process* list){
 	process* head = list;
 	for(int x = 0; x < NUMBER_PROCESS; x++){
@@ -60,7 +64,15 @@ void print_ll(process* list){
 		head = head->next;
 	}
 }
-
+*/
+void print_ll(process* list){
+	process* head = list;
+	for(int x = 0; x < NUMBER_PROCESS; x++){
+		if(head == NULL) break;
+		printf("Name: %c Completion Time: %d Arrival Time: %02d Size: %d\n", head->name[0], head->completion_time, head->arrival_time, head->page_size);
+		head = head->next;
+	}
+}
 void print_process(process p){
 	printf("\n Arrival Time: %d Completion Time: %d Process Name: %c%c\n", p.arrival_time, p.completion_time, p.name[0], p.name[1]);
 }
