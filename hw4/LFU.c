@@ -53,7 +53,7 @@ void startLFU(process** processbyarrivial, page** pagellist)
 	}
 }
 
-page* getPageLowFreqAndHighTime(page* pagelist) //this function returns the page that needs to be taken out of memory.
+page* getLowFreqAndHighTimePage(page* pagelist) //this function returns the page that needs to be taken out of memory.
 {
 	page* head = pageList;
 
@@ -76,6 +76,24 @@ page* getPageLowFreqAndHighTime(page* pagelist) //this function returns the page
 	return lowFreqAndHighTime;
 }
 
+void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber, int frequency)
+{
+page* head = *pagelist;
+page* lowestFreqAndHighestTimePage = getLowFreqAndHighTimePage(*pagelist);
+page insert;
+insert.status = 1;
+insert.inMemoryTime = inMemoryTime;
+insert.process_owner = p1;
+insert.pageNumber = pageNumber;
+insert.frequency = frequency;
+
+for(int i = 0; i < NUMBER_PAGES; i++){
+if(head->process_owner->name[0] == lowestFreqAndHighestTimePage->process_owner->name[0] && head->inMemoryTime == lowestFreqAndHighestTimePage->inMemoryTime)
+{
+	removePageFromProcessArray()
+}
+}
+}
 
 
 
@@ -156,6 +174,25 @@ if(pagesFound >= NUMBER_PAGES){
 }
 return isMemFull;
 }
+
+
+void print_pages(page* llist) {
+	
+	page* head = llist;
+	for(int x = 0; x < NUMBER_PAGES; x++){
+		if(head == NULL) break;
+
+		printf("[(#: %d),", head->pageNumber);
+		if (head->status == 1) {
+			printf("(P: %c%c)] ", head->process_owner->name[0], head->process_owner->name[1]);
+		} else {
+			printf("(P:.)] ");
+		}
+		head = head->next;
+	}
+	printf("\n\n");
+}
+
 
 
 
