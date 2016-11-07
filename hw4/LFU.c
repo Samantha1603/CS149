@@ -30,25 +30,26 @@ void startLFU(process** processbyarrivial, page** pagellist)
 				if(process_head->pagesowned[0].status == 1){
 					process_head->last_reference = getPageReference(process_head->page_size, process_head->last_reference);
 				}
-				if(!isPageAlreadyInMemory(process_head, process_head->last_reference)){
+				if(!isPageAlreadyInMemory(process_head, process_head->last_reference)){ //if page not in memory
 					//Page is not yet in memory. 
-					if(!isMemoryFull(*pagelist)){//check to see if memory is full
+					if(!isMemoryFull(*pagelist)){//if memory is not full and page not in memory
 						addPageToMemory(pagelist, process_head, currentQuanta, process_head->last_reference);//Add page to memory which should also add 1 to frequency for page	
 
 					}
-					else{//else memory is full
-							//if memory full then check if there is a page hit.
-						if(there is a page hit){
-							//increment the page
-						}
-							else {//else no page hit, then do kickOutLFUPage
-									kickOutLFUPage(pagelist, process_head, currentQuanta, page_head->frequency, process_head->last_reference);
-								}
-
-					} 
+					else{//else memory is full and page is not in memory DO SWAP IN THIS ELSE
+							
+						kickOutLFUPage(pagelist, process_head, currentQuanta, page_head->frequency, process_head->last_reference);
+							} 
 					
 					
 
+
+				}
+				else{ //this else means, pages is in memory
+
+					if(){} //if page is in memory and memory is full then its a page hit.
+
+						else{} //else page is in memory and memory is not full then its a page hit.
 
 				}
 				
@@ -57,7 +58,7 @@ void startLFU(process** processbyarrivial, page** pagellist)
 	}
 }
 
-page* 
+
 
 
 
