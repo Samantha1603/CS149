@@ -54,6 +54,9 @@ bool isMemoryFull(page* llist);
  * @param oldestPage		the oldest page to be removed
  */
 void removePageFromAProcessArray(process* p1, page* oldestPage);
+
+void removePageFromFreeList(page** pagelist, char process);
+
 #endif
 
 

@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "shared.h"
 #include "page_operations.h"
+#include "process_operations.h"
 #include "FIFO.h"
 
 /*
@@ -22,6 +23,7 @@ void runFIFO(process** prolist, page** pagelist) {
 
 		for (int i = 0; i < NUMBER_PROCESS; i++) {
 
+
 			if (process_head->completion_time > 0 && process_head->arrival_time <= currentQuanta) { // Only run that process if its completition if > 0
 
 				printf("\nQUANTA: %d\n", currentQuanta);
@@ -34,14 +36,15 @@ void runFIFO(process** prolist, page** pagelist) {
 				if (!isPageAlreadyInMemory(process_head, process_head->last_reference)) {
 
 					// Page in not yet in memory. Add to free list
-					printf("\n----ENTER - PAGE# %d OF PROCESS %c----", process_head->last_reference, process_head->name[0]);
+					printf("\nPAGE REFERENCED # %d\n", process_head->last_reference);
+					printf("\n----ENTER - PAGE# %d OF PROCESS %c----\n", process_head->last_reference, process_head->name[0]);
 
 					//if(find_4FreePages(*pagelist)) {
 						// Found 4 free pages. Can insert into free list.
 
 						if (!isMemoryFull(*pagelist)) {
 							addPageToMemory(pagelist, process_head, currentQuanta, process_head->last_reference);
-							page_head = page_head->next;
+							if (page_head != NULL) page_head = page_head->next;
 							print_pages(*pagelist);
 						} else {	
 							// Memory is full. Do swap with oldest page.
@@ -49,10 +52,14 @@ void runFIFO(process** prolist, page** pagelist) {
 							print_pages(*pagelist);
 						}
 						missCount++;
-					//} else {
+					//} //else {
 						// WAIT for process to finish
 						//print_pagesLL(*pagelist);
 						//printf("\n\n NO FREE FOUR PAGES \n\n");
+
+						//while (!find_4FreePages(*pagelist)) {
+
+						//}
 						//break;
 					//}
 				} else {
@@ -60,6 +67,13 @@ void runFIFO(process** prolist, page** pagelist) {
 					hitCount++;
 				}
 				process_head->completion_time -= 1;
+
+				if (process_head->completion_time <= 0) {
+					//printf("\nCOMPLETION TIME %d\n", process_head->completion_time);
+					printf("\nPROCESS %c DONE. REMOVING PAGES\n", process_head->name[0]);
+					// Process if finished, removing its free list from free memory
+					removePageFromFreeList(pagelist, process_head->name[0]);
+				}
 			}
 			process_head = process_head->next;
 			if (process_head == NULL) process_head = *prolist; // wrap around to head process again..
@@ -99,7 +113,7 @@ void swapWithOldestPageFIFO(page** pagelist, process* p1, int inMemoryTime, int 
 	}
 
 	// Add to the process's free memory array list
-	for(int x = 0; x < p1->page_size; x++){
+	for(int x = 0; x < p1->page_size; x++) {
 		if(p1->pagesowned[x].status != 1){
 			p1->pagesowned[x] = insert;
 			p1->num_page_in_freelist++;
@@ -127,7 +141,7 @@ page* getOldestPage(page* pagelist) {
 	return oldestPage;
 }
 
-bool isMemoryFull(page* llist){
+bool isMemoryFull(page* llist) {
 	int pagesFound = 0;
 	page* head = llist;
 	bool isMemFull = false;
@@ -178,14 +192,46 @@ void print_pages(page* llist) {
 	for(int x = 0; x < NUMBER_PAGES; x++){
 		if(head == NULL) break;
 
-		printf("[(#: %d),", head->pageNumber);
+		if (head->process_owner->name == NULL || head->process_owner->name[0] == '.') {
+			printf("[(#: .),"); // hole
+		} else {						
+			printf("[(#: %d),", head->pageNumber);
+		}
 		if (head->status == 1) {
 			printf("(P: %c%c)] ", head->process_owner->name[0], head->process_owner->name[1]);
 		} else {
-			printf("(P:.)] ");
+			printf("(P:.)] "); // hole
 		}
 		head = head->next;
 	}
 	printf("\n\n");
 }
 
+void removePageFromFreeList(page** pagelist, char pageToRemove) {
+
+	page* head = *pagelist;
+	bool isRemovalExists = false;
+
+	for (int x = 0; x < NUMBER_PAGES; x++) {
+		if (head->process_owner == NULL) break;
+		// Setting the page to be available for other pages to take its spot
+		if (head->process_owner->name[0] == pageToRemove) {
+			head->pageNumber = 0;
+			head->status = 0;
+			isRemovalExists = true; // For process name removal
+		} 
+		head = head->next;			
+	}
+
+	head = *pagelist;
+	if (isRemovalExists) {
+		// Change process name to '.' for all pages referenced to it
+		for (int x = 0; x < NUMBER_PAGES; x++) {
+			if (head->process_owner == NULL) break;
+			if (head->process_owner->name[0] == pageToRemove) head->process_owner->name[0] = '.';
+			head = head->next;			
+		}
+	}
+	printf("AFTER REMOVAL\n");
+	print_pages(*pagelist);
+}

@@ -2,8 +2,8 @@
 #define SHARED
 
 /// Total number of processes to create
-#define NUMBER_PROCESS 150
-#define NUMBER_PAGES 100
+#define NUMBER_PROCESS 50
+#define NUMBER_PAGES 25
 #define TOTAL_TIME 100
 
 #include <stdbool.h>
