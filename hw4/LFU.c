@@ -58,7 +58,28 @@ void startLFU(process** processbyarrivial, page** pagellist)
 	}
 }
 
+page* kickOutLFUPage2(page* pagelist)
+{
+	page* head = pageList;
 
+	page* lowFreqAndHighTime = malloc(sizeof(page));
+	lowFreqAndHighTime->frequency = head->frequency;
+
+	for(int i =0; i < NUMBER_PAGES; i++)
+	{
+		if(head->frequency < lowFreqAndHighTime->frequency)
+		{
+			lowFreqAndHighTime = head;
+		}
+		else if (head->frequency == lowFreqAndHighTime->frequency){
+			if(head->inMemoryTime < lowFreqAndHighTime->inMemoryTime){
+				lowFreqAndHighTime = head;
+			}
+		}
+		head = head->next;
+	}
+	return lowFreqAndHighTime;
+}
 
 
 
