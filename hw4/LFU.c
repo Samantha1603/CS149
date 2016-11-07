@@ -41,15 +41,10 @@ void startLFU(process** processbyarrivial, page** pagellist)
 						kickOutLFUPage(pagelist, process_head, currentQuanta, page_head->frequency, process_head->last_reference);
 							} 
 					
-					
+					}
+				else{ //this else means, pages is in memory and its a hit
 
-
-				}
-				else{ //this else means, pages is in memory
-
-					if(){} //if page is in memory and memory is full then its a page hit.
-
-						else{} //else page is in memory and memory is not full then its a page hit.
+					page_head->frequency = page_head->frequency + 1;
 
 				}
 				
@@ -58,7 +53,7 @@ void startLFU(process** processbyarrivial, page** pagellist)
 	}
 }
 
-page* kickOutLFUPage2(page* pagelist)
+page* getPageLowFreqAndHighTime(page* pagelist) //this function returns the page that needs to be taken out of memory.
 {
 	page* head = pageList;
 
