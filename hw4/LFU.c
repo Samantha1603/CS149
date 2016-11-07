@@ -21,8 +21,43 @@ void startLFU(process** processbyarrivial, page** pagellist)
 	process* process_head = *processbyarrivial;
 	page* page_head = *pagellist;
 
-	while(currentQuanta < 600)
+	while(currentQuanta < 600){
+		for(int i =0; i < NUMBER_PROCESS; i++){
+			if(process_head->arrival_time <= currentQuanta){
+				printf("\nQUANTA: %d\n", currentQuanta);
+				printf("\n\n COMPLETION TIME: %d \n", process_head->completion_time);
+
+				if(process_head->pagesowned[0].status == 1){
+					process_head->last_reference = getPageReference(process_head->page_size, process_head->last_reference);
+				}
+				if(!isPageAlreadyInMemory(process_head, process_head->last_reference)){
+					//Page is not yet in memory. 
+					if(!isMemoryFull(*pagelist)){//check to see if memory is full
+						addPageToMemory(pagelist, process_head, currentQuanta, process_head->last_reference);//Add page to memory which should also add 1 to frequency for page	
+
+					}
+					else{//else memory is full
+							//if memory full then check if there is a page hit.
+						if(there is a page hit){
+							//increment the page
+						}
+							else {//else no page hit, then do kickOutLFUPage
+									kickOutLFUPage(pagelist, process_head, currentQuanta, page_head->frequency, process_head->last_reference);
+								}
+
+					} 
+					
+					
+
+
+				}
+				
+			}
+		}
+	}
 }
+
+page* 
 
 
 
