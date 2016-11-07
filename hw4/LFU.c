@@ -14,42 +14,51 @@
 //When page is kicked out, reset that pages frequency to 0.
 
 //this is the function call to start the algorithm. This function uses all functions underneath it
-void startLFU(process** processbyarrivial, page** pagellist)
+void startLFU(process** processbyarrivial, page** pagelist)
 {
 	int currentQuanta = 0;
 	int isDone = 0;
+	int hitCount = 0;
+	int missCount = 0;
 	process* process_head = *processbyarrivial;
-	page* page_head = *pagellist;
+	page* page_head = *pagelist;
 
 	while(currentQuanta < 600){
 		for(int i =0; i < NUMBER_PROCESS; i++){
-			if(process_head->arrival_time <= currentQuanta){
+			if( process_head->completion_time > 0 && process_head->arrival_time <= currentQuanta){
 				printf("\nQUANTA: %d\n", currentQuanta);
 				printf("\n\n COMPLETION TIME: %d \n", process_head->completion_time);
 
-				if(process_head->pagesowned[0].status == 1){
+				if(process_head->pagesowned[0].status != NULL){
 					process_head->last_reference = getPageReference(process_head->page_size, process_head->last_reference);
 				}
 				if(!isPageAlreadyInMemory(process_head, process_head->last_reference)){ //if page not in memory
 					//Page is not yet in memory. 
 					if(!isMemoryFull(*pagelist)){//if memory is not full and page not in memory
 						addPageToMemory(pagelist, process_head, currentQuanta, process_head->last_reference);//Add page to memory which should also add 1 to frequency for page	
-
+						page_head = page_head->next;
+						print_pages(*pagelist);
 					}
 					else{//else memory is full and page is not in memory DO SWAP IN THIS ELSE
 							
-						kickOutLFUPage(pagelist, process_head, currentQuanta, page_head->frequency, process_head->last_reference);
+						swapWithLowFreqAndHighTimePage();
+						print_pages(*pagelist);
 							} 
 					
-					}
+					} missCount++;
 				else{ //this else means, pages is in memory and its a hit
 
 					page_head->frequency = page_head->frequency + 1;
+					hitCount++;
 
 				}
+				process_head->completion_time -= 1;
 				
 			}
+			process_head = process_head->next;
+			if(process_head == NULL) process_head = *processbyarrivial;
 		}
+		currentQuanta += 1;
 	}
 }
 
@@ -98,6 +107,7 @@ if(head->process_owner->name[0] == lowestFreqAndHighestTimePage->process_owner->
 
 
 //Swapping pages algorithm, processes are sorted by arrival time
+/*
 page* kickOutLFUPage(page** pagelist, process* p1, int inMemoryTime, int frequency,int pageNumber)
 {
 	page* head = *pagelist;
@@ -142,7 +152,7 @@ page* kickOutLFUPage(page** pagelist, process* p1, int inMemoryTime, int frequen
 	
 
 
-}
+}*/
 
 //check if page is currently in memory
 bool isPageAlreadyInMemory(process* p1, int pageNumber)
