@@ -6,7 +6,7 @@
 #include "page_operations.h"
 
 void generate_processes(process** list){
-	int y = 0;
+
 	process* b_list;
 	process* head;
 	b_list = malloc(sizeof(process));
@@ -19,9 +19,22 @@ void generate_processes(process** list){
 	for(int x = 0; x < NUMBER_PROCESS; x++){
 		if (x <= 25) {
 			head->name[0] = 'A' + ( x % 26 );
-		} else if (x <= 50) {
-			head->name[0] = 'a' + ( y % 26 );
-			y++;
+			head->name[1] = '0';
+		} else if (x <= 51) {
+			head->name[0] = 'a' + ( x % 26 );
+			head->name[1] = '0';
+		} else if (x <= 77) {
+			head->name[0] = 'A' + ( x % 26 );
+			head->name[1] = '1';
+		} else if (x <= 103) {
+			head->name[0] = 'a' + ( x % 26 );
+			head->name[1] = '1';
+		} else if (x <= 129) {
+			head->name[0] = 'A' + ( x % 26 );
+			head->name[1] = '2';
+		} else if (x <= 150) {
+			head->name[0] = 'a' + ( x % 21 );
+			head->name[1] = '2';
 		}
 
 		head->next = malloc(sizeof(process));
@@ -69,7 +82,8 @@ void print_ll(process* list){
 	process* head = list;
 	for(int x = 0; x < NUMBER_PROCESS; x++){
 		if(head == NULL) break;
-		printf("Name: %c Completion Time: %d Arrival Time: %02d Size: %d\n", head->name[0], head->completion_time, head->arrival_time, head->page_size);
+		printf("Name: %c%c Completion Time: %d Arrival Time: %02d Size: %d\n", head->name[0], head->name[1], 
+			head->completion_time, head->arrival_time, head->page_size);
 		head = head->next;
 	}
 }

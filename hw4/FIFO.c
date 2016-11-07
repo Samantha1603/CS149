@@ -37,7 +37,7 @@ void runFIFO(process** prolist, page** pagelist) {
 
 					// Page in not yet in memory. Add to free list
 					printf("\nPAGE REFERENCED # %d\n", process_head->last_reference);
-					printf("\n----ENTER - PAGE# %d OF PROCESS %c----\n", process_head->last_reference, process_head->name[0]);
+					printf("\n----ENTER - PAGE# %d OF PROCESS %c%c----\n", process_head->last_reference, process_head->name[0], process_head->name[1]);
 
 					//if(find_4FreePages(*pagelist)) {
 						// Found 4 free pages. Can insert into free list.
@@ -70,9 +70,9 @@ void runFIFO(process** prolist, page** pagelist) {
 
 				if (process_head->completion_time <= 0) {
 					//printf("\nCOMPLETION TIME %d\n", process_head->completion_time);
-					printf("\nPROCESS %c DONE. REMOVING PAGES\n", process_head->name[0]);
+					printf("\nPROCESS %c%c DONE. REMOVING PAGES\n", process_head->name[0], process_head->name[1]);
 					// Process if finished, removing its free list from free memory
-					removePageFromFreeList(pagelist, process_head->name[0]);
+					removePageFromFreeList(pagelist, process_head->name[0], process_head->name[1]);
 				}
 			}
 			process_head = process_head->next;
@@ -100,6 +100,7 @@ void swapWithOldestPageFIFO(page** pagelist, process* p1, int inMemoryTime, int 
 
 	for (int i = 0; i < NUMBER_PAGES; i++) {
 		if (head->process_owner->name[0] == oldestPage->process_owner->name[0] &&
+			head->process_owner->name[1] == oldestPage->process_owner->name[1] &&
 			head->inMemoryTime == oldestPage->inMemoryTime) {
 
 			removePageFromAProcessArray(head->process_owner, oldestPage); // remove that page from that process's free list first
@@ -177,7 +178,7 @@ void removePageFromAProcessArray(process* p1, page* oldestPage) {
 	for(int x = 0; x < p1->page_size; x++) {
 		if(oldestPage->pageNumber == p1->pagesowned[x].pageNumber) {
 
-			printf("\n****EVICTING - PAGE# %d OF PROCESS %c****\n\n", p1->pagesowned[x].pageNumber, p1->name[0]);
+			printf("\n****EVICTING - PAGE# %d OF PROCESS %c%c****\n\n", p1->pagesowned[x].pageNumber, p1->name[0], p1->name[1]);
 			p1->pagesowned[x].status = 0; // Set the process's free page list of that page to free
 			p1->pagesowned[x].pageNumber = -1; // Set back to free default value
 			p1->num_page_in_freelist--;
@@ -207,7 +208,7 @@ void print_pages(page* llist) {
 	printf("\n\n");
 }
 
-void removePageFromFreeList(page** pagelist, char pageToRemove) {
+void removePageFromFreeList(page** pagelist, char pageToRemove1, char pageToRemove2) {
 
 	page* head = *pagelist;
 	bool isRemovalExists = false;
@@ -215,7 +216,7 @@ void removePageFromFreeList(page** pagelist, char pageToRemove) {
 	for (int x = 0; x < NUMBER_PAGES; x++) {
 		if (head->process_owner == NULL) break;
 		// Setting the page to be available for other pages to take its spot
-		if (head->process_owner->name[0] == pageToRemove) {
+		if (head->process_owner->name[0] == pageToRemove1 && head->process_owner->name[1] == pageToRemove2) {
 			head->pageNumber = 0;
 			head->status = 0;
 			isRemovalExists = true; // For process name removal
@@ -228,7 +229,7 @@ void removePageFromFreeList(page** pagelist, char pageToRemove) {
 		// Change process name to '.' for all pages referenced to it
 		for (int x = 0; x < NUMBER_PAGES; x++) {
 			if (head->process_owner == NULL) break;
-			if (head->process_owner->name[0] == pageToRemove) head->process_owner->name[0] = '.';
+			if (head->process_owner->name[0] == pageToRemove1 && head->process_owner->name[1] == pageToRemove2) head->process_owner->name[0] = '.';
 			head = head->next;			
 		}
 	}

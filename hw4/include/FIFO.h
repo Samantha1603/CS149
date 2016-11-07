@@ -30,7 +30,7 @@ page* getOldestPage(page* pagelist);
  * Checks if a given page of a process is already in the memory of that process
  * @param p1			the process
  * @param pageNumber	the page number
- * @Returns				true if in memory. false if not
+ * @return				true if in memory. false if not
  */
 bool isPageAlreadyInMemory(process* p1, int pageNumber);
 
@@ -55,7 +55,7 @@ bool isMemoryFull(page* llist);
  */
 void removePageFromAProcessArray(process* p1, page* oldestPage);
 
-void removePageFromFreeList(page** pagelist, char process);
+void removePageFromFreeList(page** pagelist, char pageToRemove1, char pageToRemove2);
 
 #endif
 
