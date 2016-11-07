@@ -20,7 +20,7 @@ void generate_pageList(page** list){
 	for(int x = 1; x < NUMBER_PAGES; x++){ //create/initialize page list with 100 avaliable pages.
 		head->process_owner = NULL;
 		head->next = malloc(sizeof(page));
-		head->frequency = 1;
+		head->frequency = 0;
 		head->status = 0;
 		head->pageNumber = 0;
 		head->process_owner = NULL;
@@ -81,7 +81,7 @@ page* findFreePage(page *list, int length){
 }
 
 // Add page to first available position, starting from head node
-void addPageToMemory(page** list, process* p1, int inMemoryTime, int pageNumber, int frequency) 
+void addPageToMemory(page** list, process* p1, int inMemoryTime, int pageNumber) 
 {
 	// Check if page is already in memory
 	for(int x = 0; x < p1->num_page_in_freelist ; x++){
@@ -101,7 +101,7 @@ void addPageToMemory(page** list, process* p1, int inMemoryTime, int pageNumber,
 	insert.inMemoryTime = inMemoryTime;
 	insert.process_owner = p1;
 	insert.pageNumber = pageNumber;
-	insert.frequency = frequency + 1;
+	insert.frequency = 1;
 	/*
 	pageToInsert->status = 1; // change status to true when occupied
 	pageToInsert->inMemoryTime = inMemoryTime; // time page added to memory
