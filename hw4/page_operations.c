@@ -113,7 +113,7 @@ void addPageToMemory(page** list, process* p1, int inMemoryTime, int pageNumber)
 			insert.next = current->next;
 			*current = insert;
 			p1->num_page_in_freelist++;
-			return;;
+			return;
 		}
 	}
 	return;
