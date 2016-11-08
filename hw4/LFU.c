@@ -131,11 +131,23 @@ page* getLowFreqAndHighTimePage(page* pagelist, *freqArray) //this function retu
 	for(int i = 0; i < NUMBER_PAGES; i++)
 	{
 		if(lowestFoundFrequencyPageNumber == head->pageNumber){
-			lowFreq = head; //lowfreq is a node with lowest frequency
+			lowFreq = head; //lowfreq is a page node with lowest frequency
 		}
 		head = head->next;
 
-	} //couldnt find out how to get the lowest frequency with highest time
+	} 
+
+	for(int i = 0; i<NUMBER_PAGES)
+	{ //we have our lowest frequency, compare it to every other frequency in array and check times in page linked list.
+		if(lowestFoundFrequency == freqArray[i] && head->inMemoryTime < lowFreq->inMemoryTime)
+		{ 	
+			lowFreq = head;
+		}
+		head = head->next
+
+	}
+
+	//couldnt find out how to get the lowest frequency with highest time
 	//now find page that has lowest frequency and highest time
 	/*for(int i =0; i < NUMBER_PAGES; i++)
 	{
