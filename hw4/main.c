@@ -5,6 +5,7 @@
 #include "process_operations.h"
 #include "page_operations.h"
 #include "FIFO.h"
+#include "LFU.h"
 
 /// Amount of memory in MB
 #define MEMORY 100
@@ -20,7 +21,7 @@ int main(){
 	process* llist;
 	page* pagelinkedlist;
 	generate_processes(&llist);
-	sort_pll(&llist);
+	//sort_pll(&llist);
 	generate_pageList(&pagelinkedlist);
 	print_ll(llist);
 

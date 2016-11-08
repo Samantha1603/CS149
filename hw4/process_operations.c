@@ -44,7 +44,7 @@ void generate_processes(process** list){
 	return;
 }
 
-void executeProcesses(process* list, page* list)
+/*void executeProcesses(process* list, page* list)
 {
 	process* head = list;
 	for(int i = 0; i < NUMBER_PROCESS; i++)
@@ -84,7 +84,7 @@ void blockAllOtherProcesses(process* list)
 		//if(traverse->arrival_time <= currentQuanta){}
 		//currentQuanta++;
 	}
-}
+}*/
 
 void print_ll(process* list){
 	process* head = list;
