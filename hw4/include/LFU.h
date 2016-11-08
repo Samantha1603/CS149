@@ -15,5 +15,6 @@ void print_pages(page* llist);
 
 void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber, int frequency);
 
+void removePageFromAProcessArray(process* p1, page* oldestPage);
 
 #endif
