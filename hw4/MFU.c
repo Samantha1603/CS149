@@ -7,7 +7,6 @@
 #include "process_operations.h"
 #include "LFU.h"
 
-
 //while(memory is full) do this algorithm
 //We only use algorithm when memory is full.
 //Increment the frequency for that page that comes into memory.
@@ -16,7 +15,7 @@
 //When page is kicked out, reset that pages frequency to 0.
 
 //this is the function call to start the algorithm. This function uses all functions underneath it
-void startLFU(process** prolist, page** pagelist) {
+void startMFU(process** prolist, page** pagelist) {
 
 	int currentQuanta = 0;
 	int freqArray[32]; //keep track of frequency. page = index + 1; values inside are frequency of each page.
@@ -53,13 +52,13 @@ void startLFU(process** prolist, page** pagelist) {
 					printf("\nPAGE REFERENCED # %d\n", process_head->last_reference);
 					printf("\n----ENTER - PAGE# %d OF PROCESS %c%c----\n", process_head->last_reference, process_head->name[0], process_head->name[1]);
 
-						if (!isMemoryFullLFU(*pagelist)) {
+						if (!isMemoryFullMFU(*pagelist)) {
 							freqArray[process_head->last_reference] = freqArray[process_head->last_reference] + 1;
 
 							addPageToMemory(pagelist, process_head, currentQuanta, process_head->last_reference);
 							if (page_head != NULL) page_head = page_head->next;
 
-							print_pagesLFU(*pagelist);
+							print_pagesMFU(*pagelist);
 						} else {	
 							// Memory is full. Do swap with oldest page.
 							swapWithLowFreqAndHighTimePage(pagelist, process_head, currentQuanta, process_head->last_reference, freqArray);
@@ -90,25 +89,25 @@ void startLFU(process** prolist, page** pagelist) {
 		currentQuanta += 1; // Increment 1 quanta, which is
 	}
 
-	printStatsLFU(hitCount, missCount, numOfProcessesDone);
+	printStatsMFU(hitCount, missCount, numOfProcessesDone);
 }
 
 
-page* getLowFreqAndHighTimePage(page* pagelist, int* freqArray) //this function returns the page that needs to be taken out of memory.
+page* getHighFreqAndHighTimePage(page* pagelist, int* freqArray) //this function returns the page that needs to be taken out of memory.
 {
 	page* head = pagelist;
-	page* lowFreq = malloc(sizeof(page));
-	lowFreq = head; 
+	page* highFreq = malloc(sizeof(page));
+	highFreq = head; 
 	//page* lowFreqAndHighTime = malloc(sizeof(page));
 	//lowFreqAndHighTime->frequency = head->frequency;
-	int lowestFoundFrequency = freqArray[0]; //frequency value
+	int highestFoundFrequency = freqArray[0]; //frequency value
 	
 	//first find lowest frequency in frequency array
 	for(int i = 0; i < 32; i++)
 	{
 		printf("\nVALUE %d \n", freqArray[i]);
-		if(freqArray[i] != 0 && freqArray[i] < lowestFoundFrequency){
-			lowestFoundFrequency = freqArray[i];
+		if(freqArray[i] != 0 && freqArray[i] > highestFoundFrequency){
+			highestFoundFrequency = freqArray[i];
 		}
 	}
 
@@ -117,24 +116,24 @@ page* getLowFreqAndHighTimePage(page* pagelist, int* freqArray) //this function 
 	//then match the frequency to a page 
 	for(int i = 0; i < NUMBER_PAGES; i++)
 	{	// Find matching low freq in linked list
-		if(head->pageNumber == lowestFoundFrequency) {
+		if(head->pageNumber == highestFoundFrequency) {
 			// Find lowest entry time (been there the longest)
-			if (head->inMemoryTime < lowFreq->inMemoryTime) {
-				lowFreq = head; //lowfreq is a node with lowest frequency
+			if (head->inMemoryTime < highFreq->inMemoryTime) {
+				highFreq = head; //lowfreq is a node with lowest frequency
 			}
 		}
 		head = head->next;
 	}
-	return lowFreq;
+	return highFreq;
 }
 
 //function to take lowestFrequencyAndHighestTime Page from function above and swap it with a new page in memory.
-void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber, int* freqArray)
+void swapWithHighFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber, int* freqArray)
 {
 	page* head = *pagelist;
-	page* lowestFreqAndHighestTimePage = getLowFreqAndHighTimePage(*pagelist, freqArray);
+	page* highestFreqAndHighestTimePage = getHighFreqAndHighTimePage(*pagelist, freqArray);
 	// Swapped out this page so -1 frequency from the page in frequency counter array
-	freqArray[lowestFreqAndHighestTimePage->pageNumber] = freqArray[lowestFreqAndHighestTimePage->pageNumber] - 1;
+	freqArray[highestFreqAndHighestTimePage->pageNumber] = freqArray[highestFreqAndHighestTimePage->pageNumber] - 1;
 
 	// New page to be added. +1 frequency in the frequency counter array
 	freqArray[pageNumber] = freqArray[pageNumber] + 1;
@@ -147,11 +146,11 @@ void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTi
 
 	for(int i = 0; i < NUMBER_PAGES; i++){
 
-		if(head->process_owner->name[0] == lowestFreqAndHighestTimePage->process_owner->name[0] && 
-			head->process_owner->name[1] == lowestFreqAndHighestTimePage->process_owner->name[1] &&
-			head->inMemoryTime == lowestFreqAndHighestTimePage->inMemoryTime) {
+		if(head->process_owner->name[0] == highestFreqAndHighestTimePage->process_owner->name[0] && 
+			head->process_owner->name[1] == highestFreqAndHighestTimePage->process_owner->name[1] &&
+			head->inMemoryTime == highestFreqAndHighestTimePage->inMemoryTime) {
 
-			removePageFromAProcessArrayLFU(head->process_owner, lowestFreqAndHighestTimePage);
+			removePageFromAProcessArrayMFU(head->process_owner, highestFreqAndHighestTimePage);
 			(*head).status = 1;
 			(*head).inMemoryTime = inMemoryTime;
 			(*head).process_owner = p1;
@@ -172,10 +171,10 @@ void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTi
 	}
 }
 
-void removePageFromAProcessArrayLFU(process* p1, page* oldestPage) {
+void removePageFromAProcessArrayMFU(process* p1, page* highestfreqPage) {
 
 	for(int x = 0; x < p1->page_size; x++) {
-		if(oldestPage->pageNumber == p1->pagesowned[x].pageNumber) {
+		if(highestfreqPage->pageNumber == p1->pagesowned[x].pageNumber) {
 
 			printf("\n****EVICTING - PAGE# %d OF PROCESS %c****\n\n", p1->pagesowned[x].pageNumber, p1->name[0]);
 			p1->pagesowned[x].status = 0; // Set the process's free page list of that page to free
@@ -187,7 +186,7 @@ void removePageFromAProcessArrayLFU(process* p1, page* oldestPage) {
 }
 
 
-void removePageFromFreeListLFU(page** pagelist, char pageToRemove1, char pageToRemove2, int* freqArray) {
+void removePageFromFreeListMFU(page** pagelist, char pageToRemove1, char pageToRemove2, int* freqArray) {
 
 	page* head = *pagelist;
 	bool isRemovalExists = false;
@@ -217,13 +216,13 @@ void removePageFromFreeListLFU(page** pagelist, char pageToRemove1, char pageToR
 		}
 	}
 	printf("AFTER REMOVAL\n");
-	print_pagesLFU(*pagelist);
+	print_pagesMFU(*pagelist);
 }
 
 
 
 //check if page is currently in memory
-bool isPageAlreadyInMemoryLFU(process* p1, int pageNumber)
+bool isPageAlreadyInMemoryMFU(process* p1, int pageNumber)
 {
 	bool isInMemory = false;
 	for(int x =0; x < p1->num_page_in_freelist; x++)
@@ -234,7 +233,7 @@ bool isPageAlreadyInMemoryLFU(process* p1, int pageNumber)
 }
 
 //check if memory is full
-bool isMemoryFullLFU(page* llist)
+bool isMemoryFullMFU(page* llist)
 {
 	int pagesFound = 0;
 	page* head = llist;
@@ -254,7 +253,7 @@ bool isMemoryFullLFU(page* llist)
 }
 
 
-void print_pagesLFU(page* llist) {
+void print_pagesMFU(page* llist) {
 	
 	page* head = llist;
 	for(int x = 0; x < NUMBER_PAGES; x++){
@@ -276,7 +275,7 @@ void print_pagesLFU(page* llist) {
 }
 
 
-void printStatsLFU(int hitCount, int missCount, int numOfProcessesDone) {
+void printStatsMFU(int hitCount, int missCount, int numOfProcessesDone) {
 	printf("\n\n****************************\n");
 	printf("         HIT: %d         \n", hitCount);
 	printf("         MISS: %d        \n", missCount);
