@@ -3,7 +3,7 @@
 #define LFU
 
 
-void startLFU(process** processbyarrivial, page** pagellist);
+void startLFU(process** prolist, page** pagelist);
 
 page* getLowFreqAndHighTimePage(page* pagelist);
 
@@ -13,8 +13,10 @@ bool isMemoryFull(page* llist);
 
 void print_pages(page* llist);
 
-void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber, int frequency);
+void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber);
 
 void removePageFromAProcessArray(process* p1, page* oldestPage);
+
+void removePageFromFreeList(page** pagelist, char pageToRemove1, char pageToRemove2);
 
 #endif
