@@ -6,6 +6,7 @@
 #include "page_operations.h"
 #include "process_operations.h"
 #include "LFU.h"
+#include "MFU.h"
 
 //while(memory is full) do this algorithm
 //We only use algorithm when memory is full.
@@ -259,7 +260,7 @@ void print_pagesMFU(page* llist) {
 	for(int x = 0; x < NUMBER_PAGES; x++){
 		if(head == NULL) break;
 
-		if (head->process_owner->name == NULL || head->process_owner->name[0] == '.') {
+		if (head->process_owner == NULL || head->process_owner->name[0] == '.') {
 			printf("[(#: .),"); // hole
 		} else {						
 			printf("[(#: %d),", head->pageNumber);
