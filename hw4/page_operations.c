@@ -84,10 +84,10 @@ page* findFreePage(page *list, int length){
 void addPageToMemory(page** list, process* p1, int inMemoryTime, int pageNumber) 
 {
 	// Check if page is already in memory
-	for(int x = 0; x < p1->num_page_in_freelist ; x++){
-		if(p1->pagesowned[x].pageNumber == pageNumber) return;
-	}
-	if(!find_4FreePages) return; // this is where page replacement algorithms should begin
+	//for(int x = 0; x < p1->num_page_in_freelist ; x++){
+	//	if(p1->pagesowned[x].pageNumber == pageNumber) return;
+	//}
+	//if(!find_4FreePages) return; // this is where page replacement algorithms should begin
 	//They should decide what to do with pages once memory fills
 	// End Check
 	page* current;
