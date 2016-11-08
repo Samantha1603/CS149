@@ -55,7 +55,20 @@ bool isMemoryFull(page* llist);
  */
 void removePageFromAProcessArray(process* p1, page* oldestPage);
 
-void removePageFromFreeList(page** pagelist, char pageToRemove1, char pageToRemove2);
+/**
+ * Remove a page from the free memory list when process is finished
+ * @param pagelist		the page list linked list 
+ * @param nameOne		the first char of process name
+ * @param nameTwo		the second char of process name
+ */
+void removePageFromFreeList(page** pagelist, char nameOne, char nameTwo);
+
+/**
+ * Prints the final statistics of the algorithm
+ * @param hitCount		count of hits
+ * @param missCount		count of misses
+ */
+ void printStats(int hitCount, int missCount);
 
 #endif
 

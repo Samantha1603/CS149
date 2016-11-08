@@ -36,8 +36,8 @@ void runFIFO(process** prolist, page** pagelist) {
 				if (!isPageAlreadyInMemory(process_head, process_head->last_reference)) {
 
 					// Page in not yet in memory. Add to free list
-					printf("\nPAGE REFERENCED # %d\n", process_head->last_reference);
-					printf("\n----ENTER - PAGE# %d OF PROCESS %c%c----\n", process_head->last_reference, process_head->name[0], process_head->name[1]);
+					printf("PAGE REFERENCED # %d\n", process_head->last_reference);
+					printf("\n----INSERT - PAGE# %d OF PROCESS %c%c----\n", process_head->last_reference, process_head->name[0], process_head->name[1]);
 
 					//if(find_4FreePages(*pagelist)) {
 						// Found 4 free pages. Can insert into free list.
@@ -56,10 +56,6 @@ void runFIFO(process** prolist, page** pagelist) {
 						// WAIT for process to finish
 						//print_pagesLL(*pagelist);
 						//printf("\n\n NO FREE FOUR PAGES \n\n");
-
-						//while (!find_4FreePages(*pagelist)) {
-
-						//}
 						//break;
 					//}
 				} else {
@@ -81,12 +77,9 @@ void runFIFO(process** prolist, page** pagelist) {
 		currentQuanta += 1; // Increment 1 quanta, which is
 	}
 
-	printf("\n\n****************************\n");
-	printf("         HIT: %d         \n", hitCount);
-	printf("         MISS: %d        \n", missCount);
-	printf("      HIT RATIO: %.2f     \n", (float) hitCount / missCount);
-	printf("****************************\n\n\n");
+	printStats(hitCount, missCount);
 }
+
 
 void swapWithOldestPageFIFO(page** pagelist, process* p1, int inMemoryTime, int pageNumber) {
 
@@ -123,6 +116,7 @@ void swapWithOldestPageFIFO(page** pagelist, process* p1, int inMemoryTime, int 
 	}
 }
 
+
 page* getOldestPage(page* pagelist) {
 
 	page* head = pagelist;
@@ -142,6 +136,7 @@ page* getOldestPage(page* pagelist) {
 	return oldestPage;
 }
 
+
 bool isMemoryFull(page* llist) {
 	int pagesFound = 0;
 	page* head = llist;
@@ -160,6 +155,7 @@ bool isMemoryFull(page* llist) {
 	return isMemFull;
 }
 
+
 bool isPageAlreadyInMemory(process* p1, int pageNumber) {
 
 	bool isInMemory = false;
@@ -172,6 +168,7 @@ bool isPageAlreadyInMemory(process* p1, int pageNumber) {
 	}
 	return isInMemory;
 }
+
 
 void removePageFromAProcessArray(process* p1, page* oldestPage) {
 
@@ -186,6 +183,37 @@ void removePageFromAProcessArray(process* p1, page* oldestPage) {
 		}
 	} 
 }
+
+
+void removePageFromFreeList(page** pagelist, char nameOne, char nameTwo) {
+
+	page* head = *pagelist;
+	bool isRemovalExists = false;
+
+	for (int x = 0; x < NUMBER_PAGES; x++) {
+		if (head->process_owner == NULL) break;
+		// Setting the page to be available for other pages to take its spot
+		if (head->process_owner->name[0] == nameOne && head->process_owner->name[1] == nameTwo) {
+			head->pageNumber = 0;
+			head->status = 0;
+			isRemovalExists = true; // For process name removal
+		} 
+		head = head->next;			
+	}
+
+	head = *pagelist;
+	if (isRemovalExists) {
+		// Change process name to '.' for all pages referenced to it
+		for (int x = 0; x < NUMBER_PAGES; x++) {
+			if (head->process_owner == NULL) break;
+			if (head->process_owner->name[0] == nameOne && head->process_owner->name[1] == nameTwo) head->process_owner->name[0] = '.';
+			head = head->next;			
+		}
+	}
+	printf("AFTER REMOVAL\n");
+	print_pages(*pagelist);
+}
+
 
 void print_pages(page* llist) {
 	
@@ -208,31 +236,14 @@ void print_pages(page* llist) {
 	printf("\n\n");
 }
 
-void removePageFromFreeList(page** pagelist, char pageToRemove1, char pageToRemove2) {
 
-	page* head = *pagelist;
-	bool isRemovalExists = false;
+void printStats(int hitCount, int missCount) {
+	printf("\n\n****************************\n");
+	printf("         HIT: %d         \n", hitCount);
+	printf("         MISS: %d        \n", missCount);
+	printf("      HIT RATIO: %.2f     \n", (float) hitCount / missCount);
+	printf("      MISS RATIO: %.2f     \n", (1 - (float) hitCount / missCount));
+	printf("****************************\n\n");
+	printf("All processes swapped in.\n\n");
 
-	for (int x = 0; x < NUMBER_PAGES; x++) {
-		if (head->process_owner == NULL) break;
-		// Setting the page to be available for other pages to take its spot
-		if (head->process_owner->name[0] == pageToRemove1 && head->process_owner->name[1] == pageToRemove2) {
-			head->pageNumber = 0;
-			head->status = 0;
-			isRemovalExists = true; // For process name removal
-		} 
-		head = head->next;			
-	}
-
-	head = *pagelist;
-	if (isRemovalExists) {
-		// Change process name to '.' for all pages referenced to it
-		for (int x = 0; x < NUMBER_PAGES; x++) {
-			if (head->process_owner == NULL) break;
-			if (head->process_owner->name[0] == pageToRemove1 && head->process_owner->name[1] == pageToRemove2) head->process_owner->name[0] = '.';
-			head = head->next;			
-		}
-	}
-	printf("AFTER REMOVAL\n");
-	print_pages(*pagelist);
 }
