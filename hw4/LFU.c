@@ -5,6 +5,7 @@
 #include "shared.h"
 #include "page_operations.h"
 #include "process_operations.h"
+#include "LFU.h"
 
 //while(memory is full) do this algorithm
 //We only use algorithm when memory is full.
@@ -48,7 +49,7 @@ void startLFU(process** processbyarrivial, page** pagelist)
 					} missCount++;
 				else{ //this else means, pages is in memory and its a hit
 
-					page_head->frequency = page_head->frequency + 1;
+					//page_head->frequency = page_head->frequency + 1;
 					hitCount++;
 
 				}
@@ -60,11 +61,17 @@ void startLFU(process** processbyarrivial, page** pagelist)
 		}
 		currentQuanta += 1;
 	}
+
+	printf("\n\n****************************\n");
+	printf("         HIT: %d         \n", hitCount);
+	printf("         MISS: %d        \n", missCount);
+	printf("      HIT RATIO: %.2f     \n", (float) hitCount / missCount);
+	printf("****************************\n\n\n");
 }
 
 page* getLowFreqAndHighTimePage(page* pagelist) //this function returns the page that needs to be taken out of memory.
 {
-	page* head = pageList;
+	page* head = pagelist;
 
 	page* lowFreqAndHighTime = malloc(sizeof(page));
 	lowFreqAndHighTime->frequency = head->frequency;
@@ -99,9 +106,24 @@ insert.frequency = frequency;
 for(int i = 0; i < NUMBER_PAGES; i++){
 if(head->process_owner->name[0] == lowestFreqAndHighestTimePage->process_owner->name[0] && head->inMemoryTime == lowestFreqAndHighestTimePage->inMemoryTime)
 {
-	removePageFromProcessArray()
+	removePageFromAProcessArray(head->process_owner, lowestFreqAndHighestTimePage);
+	(*head).status = 1;
+	(*head).inMemoryTime = inMemoryTime;
+	(*head).process_owner = p1;
+	(*head).pageNumber = pageNumber;
+	(*head).frequency = 1;
+	break;
 }
+head = head->next;
 }
+// Add to the process's free memory array list
+	for(int x = 0; x < p1->page_size; x++) {
+		if(p1->pagesowned[x].status != 1){
+			p1->pagesowned[x] = insert;
+			p1->num_page_in_freelist++;
+			break;
+		}
+	}
 }
 
 
@@ -153,6 +175,54 @@ page* kickOutLFUPage(page** pagelist, process* p1, int inMemoryTime, int frequen
 
 
 }*/
+
+
+
+void removePageFromAProcessArray(process* p1, page* oldestPage) {
+
+	for(int x = 0; x < p1->page_size; x++) {
+		if(oldestPage->pageNumber == p1->pagesowned[x].pageNumber) {
+
+			printf("\n****EVICTING - PAGE# %d OF PROCESS %c****\n\n", p1->pagesowned[x].pageNumber, p1->name[0]);
+			p1->pagesowned[x].status = 0; // Set the process's free page list of that page to free
+			p1->pagesowned[x].pageNumber = -1; // Set back to free default value
+			p1->num_page_in_freelist--;
+			break;
+		}
+	} 
+}
+
+
+void removePageFromFreeList(page** pagelist, char pageToRemove) {
+
+	page* head = *pagelist;
+	bool isRemovalExists = false;
+
+	for (int x = 0; x < NUMBER_PAGES; x++) {
+		if (head->process_owner == NULL) break;
+		// Setting the page to be available for other pages to take its spot
+		if (head->process_owner->name[0] == pageToRemove) {
+			head->pageNumber = 0;
+			head->status = 0;
+			isRemovalExists = true; // For process name removal
+		} 
+		head = head->next;			
+	}
+
+	head = *pagelist;
+	if (isRemovalExists) {
+		// Change process name to '.' for all pages referenced to it
+		for (int x = 0; x < NUMBER_PAGES; x++) {
+			if (head->process_owner == NULL) break;
+			if (head->process_owner->name[0] == pageToRemove) head->process_owner->name[0] = '.';
+			head = head->next;			
+		}
+	}
+	printf("AFTER REMOVAL\n");
+	print_pages(*pagelist);
+}
+
+
 
 //check if page is currently in memory
 bool isPageAlreadyInMemory(process* p1, int pageNumber)
