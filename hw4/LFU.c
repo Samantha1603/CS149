@@ -123,7 +123,7 @@ page* getLowFreqAndHighTimePage(page* pagelist, *freqArray) //this function retu
 	{
 		if(freqArray[i] < lowestFoundFrequency){
 			lowestFoundFrequency = freqArray[i];
-			lowestFoundFrequencyPageNumber++;
+			lowestFoundFrequencyPageNumber = i -1;
 		}
 
 	}
@@ -135,9 +135,9 @@ page* getLowFreqAndHighTimePage(page* pagelist, *freqArray) //this function retu
 		}
 		head = head->next;
 
-	}
+	} //couldnt find out how to get the lowest frequency with highest time
 	//now find page that has lowest frequency and highest time
-	for(int i =0; i < NUMBER_PAGES; i++)
+	/*for(int i =0; i < NUMBER_PAGES; i++)
 	{
 		//if(head->frequency < lowFreqAndHighTime->frequency)
 		if( head->inMemoryTime < lowFreq->inMemoryTime )
@@ -150,12 +150,12 @@ page* getLowFreqAndHighTimePage(page* pagelist, *freqArray) //this function retu
 			}
 		}
 		head = head->next;
-	}
+	} */
 	return lowFreq;
 }
 
 //function to take lowestFrequencyAndHighestTime Page from function above and swap it with a new page in memory.
-void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber, *freqArray)
+void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber, int *freqArray)
 {
 page* head = *pagelist;
 page* lowestFreqAndHighestTimePage = getLowFreqAndHighTimePage(*pagelist, *freqArray);
@@ -170,7 +170,7 @@ insert.frequency = 1;
 for(int i = 0; i < NUMBER_PAGES; i++){
 if(head->process_owner->name[0] == lowestFreqAndHighestTimePage->process_owner->name[0] && head->inMemoryTime == lowestFreqAndHighestTimePage->inMemoryTime)
 {
-	removePageFromAProcessArrayLFU(head->process_owner, lowestFreqAndHighestTimePage);
+	removePageFromAProcessArrayLFU(head->process_owner, lowestFreqAndHighestTimePage, *freqArray); //changed this to decrement in array of frequency.
 	(*head).status = 1;
 	(*head).inMemoryTime = inMemoryTime;
 	(*head).process_owner = p1;
@@ -242,10 +242,12 @@ page* kickOutLFUPage(page** pagelist, process* p1, int inMemoryTime, int frequen
 
 
 
-void removePageFromAProcessArrayLFU(process* p1, page* oldestPage) {
+void removePageFromAProcessArrayLFU(process* p1, page* LFUPage, int *freqArray ) {
+
+	
 
 	for(int x = 0; x < p1->page_size; x++) {
-		if(oldestPage->pageNumber == p1->pagesowned[x].pageNumber) {
+		if(LFUPage->pageNumber == p1->pagesowned[x].pageNumber) {
 
 			printf("\n****EVICTING - PAGE# %d OF PROCESS %c****\n\n", p1->pagesowned[x].pageNumber, p1->name[0]);
 			p1->pagesowned[x].status = 0; // Set the process's free page list of that page to free
@@ -254,6 +256,14 @@ void removePageFromAProcessArrayLFU(process* p1, page* oldestPage) {
 			break;
 		}
 	} 
+	//decrement value of frequency for page in array that is being taken out
+	for(int i = 1; i <= 31; i++)
+	{
+		if(LFUPage->pageNumber == i+1)
+		{
+			freqArray[i] = freqArray[i] - 1;
+		}
+	}
 }
 
 
