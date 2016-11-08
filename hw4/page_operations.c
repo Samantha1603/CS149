@@ -114,7 +114,7 @@ void addPageToMemory(page** list, process* p1, int inMemoryTime, int pageNumber)
 			insert.next = current->next;
 			*current = insert;
 			p1->num_page_in_freelist++;
-			return;;
+			return;
 		}
 	}
 	return;
@@ -146,6 +146,8 @@ void print_pagesLL(page* llist) {
 	page* head = llist;
 	for(int x = 0; x < NUMBER_PAGES; x++){
 		if(head == NULL) break;
+
+
 		printf("Status: %d \t Page Number: %d", head->status, head->pageNumber);
 		if(head->status == 1) printf(" Page Owner: %c\n", head->process_owner->name[0]);
 		else printf(" Page Owner: Free\n");

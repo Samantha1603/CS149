@@ -20,7 +20,6 @@ int main(){
 	process* llist;
 	generate_processes(&llist);
 	//sort_pll(&llist);
-
 	page* pagelinkedlist;
 	generate_pageList(&pagelinkedlist);
 
@@ -36,6 +35,7 @@ int main(){
 	printf("\n\nHERE IS LFU ALGORITHM\n\n" );
 	printf("***********************");
 	startLFU(&llist, &pagelinkedlist);
+
 
 	return 0;
 }
