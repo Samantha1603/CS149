@@ -39,7 +39,7 @@ void generate_processes(process** list){
 
 		head->next = malloc(sizeof(process));
 		//head->arrival_time = (rand() % TOTAL_TIME) * 10;
-		head->arrival_time = (rand() % 10) * 10;
+		head->arrival_time = (rand() % TOTAL_TIME) * 10;
 		head->page_size = rand() % 4;
 		head->num_page_in_freelist = 0;
 		switch(head->page_size){
