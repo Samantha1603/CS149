@@ -6,6 +6,7 @@
 #include "page_operations.h"
 #include "FIFO.h"
 #include "LFU.h"
+#include "MFU.h"
 
 /// Amount of memory in MB
 #define MEMORY 100
@@ -17,12 +18,28 @@ int main(){
 	
 	srand(time(NULL));
 	// Generate Processes
-	process* llist;
-	generate_processes(&llist);
+	process* llistFIFO;
+	generate_processes(&llistFIFO);
 	//sort_pll(&llist);
 
-	page* pagelinkedlist;
-	generate_pageList(&pagelinkedlist);
+	page* pagelinkedlistFIFO;
+	generate_pageList(&pagelinkedlistFIFO);
+
+
+	process* llistLFU;
+	generate_processes(&llistLFU);
+	//sort_pll(&llist);
+
+	page* pagelinkedlistLFU;
+	generate_pageList(&pagelinkedlistLFU);
+
+
+	process* llistMFU;
+	generate_processes(&llistMFU);
+	//sort_pll(&llist);
+
+	page* pagelinkedlistMFU;
+	generate_pageList(&pagelinkedlistMFU);
 
 	//print_ll(llist);
 	print_ll(llist);
@@ -31,11 +48,15 @@ int main(){
 	printf("***********************");
 	printf("\n\nHERE IS FIFO ALGORITHM\n\n" );
 	printf("***********************");
-	//runFIFO(&llist, &pagelinkedlist);
+	runFIFO(&llistFIFO, &pagelinkedlistFIFO);
 	printf("\n***********************\n");
 	printf("\n\nHERE IS LFU ALGORITHM\n\n" );
 	printf("***********************");
-	startLFU(&llist, &pagelinkedlist);
+	startLFU(&llistLFU, &pagelinkedlistLFU);
+		printf("\n***********************\n");
+	printf("\n\nHERE IS MFU ALGORITHM\n\n" );
+	printf("***********************");
+	startMFU(&llistMFU, &pagelinkedlistMFU);
 
 	return 0;
 }
