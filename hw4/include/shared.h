@@ -17,6 +17,8 @@ struct process{
 	struct page* pagesowned; //start of list of pages in memory
 	int last_reference;
 	struct process* next; // makes possible to create linked list
+	int blocked; //0 for not blocked, 1 for blocked. 
+	//this is for blocking processes from starting if there are not 4 free pages available.
 };
 
 typedef struct process process;
