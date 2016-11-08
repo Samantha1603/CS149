@@ -65,10 +65,11 @@ void removePageFromFreeList(page** pagelist, char nameOne, char nameTwo);
 
 /**
  * Prints the final statistics of the algorithm
- * @param hitCount		count of hits
- * @param missCount		count of misses
+ * @param hitCount					count of hits
+ * @param missCount					count of misses
+ * @param numOfProcessesDoneunt		count total processes done
  */
- void printStats(int hitCount, int missCount);
+ void printStats(int hitCount, int missCount, int numOfProcessesDone);
 
 #endif
 
