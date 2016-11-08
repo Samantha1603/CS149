@@ -5,6 +5,7 @@
 #include "process_operations.h"
 #include "page_operations.h"
 #include "FIFO.h"
+#include "LFU.h"
 
 /// Amount of memory in MB
 #define MEMORY 100
@@ -29,6 +30,7 @@ int main(){
 	//print_ll(llist);
 
 	runFIFO(&llist, &pagelinkedlist);
+	//startLFU(&llist, &pagelinkedlist);
 
 	return 0;
 }
