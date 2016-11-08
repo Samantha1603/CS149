@@ -2,201 +2,153 @@
 #include <stdlib.h>
 #include <time.h>
 #include "shared.h"
-#include "process_operations.h"
 #include "page_operations.h"
 
-void generate_processes(process** list){
+#define TRUE 1
+#define FALSE 0
 
-	process* b_list;
-	process* head;
-	b_list = malloc(sizeof(process));
-	b_list->next = malloc(sizeof(process));
-	//b_list->name[0] = 'A';
-	//b_list->arrival_time = rand() % TOTAL_TIME;
-	//b_list->completion_time = (rand() % 5) + 1;
-	//b_list->num_page_in_freelist = 0;
-	head = b_list;//->next?
-	for(int x = 0; x < NUMBER_PROCESS; x++){
-		if (x <= 25) {
-			head->name[0] = 'A' + ( x % 26 );
-			head->name[1] = '0';
-		} else if (x <= 51) {
-			head->name[0] = 'a' + ( x % 26 );
-			head->name[1] = '0';
-		} else if (x <= 77) {
-			head->name[0] = 'A' + ( x % 26 );
-			head->name[1] = '1';
-		} else if (x <= 103) {
-			head->name[0] = 'a' + ( x % 26 );
-			head->name[1] = '1';
-		} else if (x <= 129) {
-			head->name[0] = 'A' + ( x % 26 );
-			head->name[1] = '2';
-		} else if (x <= 150) {
-			head->name[0] = 'a' + ( x % 21 );
-			head->name[1] = '2';
-		}
+void generate_pageList(page** list){
+	page* b_list;
+	page* head;
+	b_list = malloc(sizeof(page));
+	b_list->next = malloc(sizeof(page));
+	b_list->status = 0;
+	b_list->pageNumber = 0;
 
-		head->next = malloc(sizeof(process));
-		//head->arrival_time = (rand() % TOTAL_TIME) * 10;
-		head->arrival_time = (rand() % TOTAL_TIME) * 10;
-		head->page_size = rand() % 4;
-		head->num_page_in_freelist = 0;
-		switch(head->page_size){
-			case 0: head->page_size = 5;
-					break;
-			case 1: head->page_size = 11;
-					break;
-			case 2: head->page_size = 17;
-					break;
-			case 3: head->page_size = 31;
-					break;
-			default: head->page_size = 5;
-					break;
-		}
-		head->last_reference = 0;
-		head->completion_time = ((rand() % 5) + 1) * 10; // Unit of quanta. 1 quata = 100ms
-		head->pagesowned = calloc(head->page_size, sizeof(page));
-		for (int i = 0; i < head->page_size; i++) {
-			head->pagesowned[i].pageNumber = -1; // Default. -1 is an impossible page so process starts with known value.
-		}
+	head = b_list->next;
 
-
+	for(int x = 1; x < NUMBER_PAGES; x++){ //create/initialize page list with 100 avaliable pages.
+		head->process_owner = NULL;
+		head->next = malloc(sizeof(page));
+		head->frequency = 0;
+		head->status = 0;
+		head->pageNumber = 0;
+		head->process_owner = NULL;
 		head = head->next;
 	}
+	head->next = NULL;
 	//free(head); needed?
 	*list = b_list;
+
 	return;
 }
-/*
-void print_ll(process* list){
-	process* head = list;
-	for(int x = 0; x < NUMBER_PROCESS; x++){
+
+bool find_4FreePages(page* llist){
+	int pagesFound = 0;
+	page* head = llist;
+
+	for(int x = 0; x < NUMBER_PAGES; x++) //iterate through linked list of pages to find 4 available pages.
+	{
+	    if(head->status == 0)
+	    {
+	        pagesFound++;
+	    }
+	    head = head->next;
+
+	    if (pagesFound >= 4) break; 
+	}
+	
+	if(pagesFound >= 4){
+		return true;
+
+	} else {
+ 		return false;
+	}
+}
+
+// Remove the page at a given position
+void removeAPage(page** list, int nodeIndex) 
+{
+	page* temp = *list;
+
+	if (list == NULL || *list == NULL || nodeIndex < 0) return;
+
+		// Go to the node position 
+		for (int x = 1; x < nodeIndex; x++) {
+			temp = temp->next;
+			if (temp == NULL) return;
+		}
+		temp->status = 0;
+		return;
+}
+
+page* findFreePage(page *list, int length){
+	page* traverse = list;
+	for(int x = 0; x < length; x++){
+		if(traverse->status == 0) return traverse;
+	}
+	return NULL;  //check for null if no free page is found
+}
+
+// Add page to first available position, starting from head node
+void addPageToMemory(page** list, process* p1, int inMemoryTime, int pageNumber) 
+{
+	// Check if page is already in memory
+	//for(int x = 0; x < p1->num_page_in_freelist ; x++){
+	//	if(p1->pagesowned[x].pageNumber == pageNumber) return;
+	//}
+	//if(!find_4FreePages) return; // this is where page replacement algorithms should begin
+	//They should decide what to do with pages once memory fills
+	// End Check
+	page* current;
+	page* temp;
+	current = *list;
+	page insert;
+	while(current->status == 1){
+		current = current->next;
+	}
+	insert.status=1;
+	insert.inMemoryTime = inMemoryTime;
+	insert.process_owner = p1;
+	insert.pageNumber = pageNumber;
+	insert.frequency = 1;
+	/*
+	pageToInsert->status = 1; // change status to true when occupied
+	pageToInsert->inMemoryTime = inMemoryTime; // time page added to memory
+	pageToInsert->process_owner = p1;
+	pageToInsert->pageNumber = pageNumber;
+	*/
+	for(int x = 0; x < p1->page_size; x++){
+		if(p1->pagesowned[x].status != 1){
+			p1->pagesowned[x] = insert;
+			insert.next = current->next;
+			*current = insert;
+			p1->num_page_in_freelist++;
+			return;;
+		}
+	}
+	return;
+}
+
+// Created based on suggested procedure for locality of reference
+int getPageReference(int pageSize, int lastReference) 
+{
+	int random = rand() % 11; // 0 -> 10
+	int refNum = 0;
+
+	if(random < 7) {
+		refNum = lastReference + (rand() % 3) - 1; // -1 -> 1
+		if (refNum < 0) refNum = 0; // wrap around
+
+	} else if(random >= 7) {
+		refNum = lastReference + (rand() % 8) + 2; // 2 -> 9
+		if (refNum > pageSize) refNum = 0; // wrap around 
+	}
+	return refNum;
+}
+
+/**
+ * Prints a linked list of pages. Prints the page number and their status e.g. in use or not
+ * @param llist linked list of pages
+ */
+void print_pagesLL(page* llist) {
+
+	page* head = llist;
+	for(int x = 0; x < NUMBER_PAGES; x++){
 		if(head == NULL) break;
-		printf("Name: %c Completion Time: %d Arrival Time: %02d\n", head->name[0], head->completion_time, head->arrival_time);
+		printf("Status: %d \t Page Number: %d", head->status, head->pageNumber);
+		if(head->status == 1) printf(" Page Owner: %c\n", head->process_owner->name[0]);
+		else printf(" Page Owner: Free\n");
 		head = head->next;
 	}
-}
-*/
-void print_ll(process* list){
-	process* head = list;
-	for(int x = 0; x < NUMBER_PROCESS; x++){
-		if(head == NULL) break;
-		printf("Name: %c%c Completion Time: %d Arrival Time: %02d Size: %d\n", head->name[0], head->name[1], 
-			head->completion_time, head->arrival_time, head->page_size);
-		head = head->next;
-	}
-}
-void print_process(process p){
-	printf("\n Arrival Time: %d Completion Time: %d Process Name: %c%c\n", p.arrival_time, p.completion_time, p.name[0], p.name[1]);
-}
-
-void sort_pll(process** list){
-	process* b_list = *list;
-	process* node = *list;
-	process* p1;
-	int length = 0;
-	while(node != NULL){
-		node = node->next;
-		length++;
-	}
-	length--;
-
-	//p1 = sort_pll_r(b_list, 0, length / 2);
-	//p2 = sort_pll_r(b_list, (length / 2) + 1, length);
-
-	p1 = sort_pll_r(b_list, 0, length);
-	*list = p1;
-	return;
-}
-
-process* sort_pll_r(process* list, int lo, int hi){
-	process* p1 = list;
-	if(hi - lo < 1) return p1;
-	process* p2 = list;
-	if(hi - lo == 1){
-		for(int x = 0; x < lo; x++) p1 = p1->next;
-		for(int x = 0; x < hi; x++){
-			 if(p2 == NULL){
-			 	p1->next = NULL;
-			 	return p1;
-			 }
-			 p2 = p2->next;
-		}
-		//printf("Acquire p1 and 2\n");
-		//print_process(*p1);
-		//print_process(*p2);
-		if(p1->arrival_time > p2->arrival_time){
-			swap(&*p1, &*p2);
-		}
-
-
-		return p1;
-	}
-	p1 = sort_pll_r(list, lo, (hi+lo) / 2);
-	p2 = sort_pll_r(list, ((hi+lo) / 2), hi);
-	int p1_bounds = ((hi+lo) / 2) - lo;
-	int p2_bounds = hi - (((hi+lo) / 2));
-	process* p_tot = malloc(sizeof(process) * (hi-lo));
-	process temp;
-
-	for(int x = 0; x < hi - lo; x++){
-		if(p1 == NULL){
-			p_tot[x] = *p2;
-			p2_bounds--;
-			p2 = p2->next;
-		}
-		else if(p2 == NULL){
-			p_tot[x] = *p1;
-			p1_bounds--;	
-			p1 = p1->next;
-		}
-		else if(p1->arrival_time < p2->arrival_time && p1_bounds > 0){
-			p_tot[x] = *p1;
-			p1 = p1->next;
-			p1_bounds--;
-		}
-		else if(p1->arrival_time > p2->arrival_time && p2_bounds > 0){
-			p_tot[x] = *p2;
-			p2 = p2->next;
-			p2_bounds--;
-		}
-		else if(p1_bounds < 1){
-			p_tot[x] = *p2;
-			p2 = p2->next;
-			p2_bounds--;
-		}
-		else{
-		p_tot[x] = *p1;
-		p1 = p1->next;
-		p1_bounds--;
-		}
-		if( x > 0) p_tot[x - 1].next = &p_tot[x];
-	}
-	p_tot[(hi-lo) - 1].next = NULL;
-
-	return p_tot;
-}
-
-void print_process_pages(process p){
-	for(int x = 0; x < p.num_page_in_freelist; x++){
-		printf("page number: %d\n", p.pagesowned[x].pageNumber);
-	}
-	return;
-}
-
-static void swap(process* a, process* b){
-	if(a->completion_time == 0 || b->completion_time == 0) return;
-	process temp = *a;
-	a->name[0] = b->name[0];
-	a->name[1] = b->name[1];
-	a->page_size = b->page_size;
-	a->arrival_time = b->arrival_time;
-	a->completion_time = b->completion_time;
-
-	b->name[0] = temp.name[0];
-	b->name[1] = temp.name[1];
-	b->page_size = temp.page_size;
-	b->arrival_time = temp.arrival_time;
-	b->completion_time = temp.completion_time;
 }
