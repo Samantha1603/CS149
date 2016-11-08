@@ -24,7 +24,6 @@ void runFIFO(process** prolist, page** pagelist) {
 
 		for (int i = 0; i < NUMBER_PROCESS; i++) {
 
-
 			if (process_head->completion_time > 0 && process_head->arrival_time <= currentQuanta) { // Only run that process if its completition if > 0
 
 				printf("\nQUANTA: %d\n", currentQuanta);
@@ -40,7 +39,7 @@ void runFIFO(process** prolist, page** pagelist) {
 					printf("PAGE REFERENCED # %d\n", process_head->last_reference);
 					printf("\n----INSERT - PAGE# %d OF PROCESS %c%c----\n", process_head->last_reference, process_head->name[0], process_head->name[1]);
 
-					//if(find_4FreePages(*pagelist)) {
+					if(find4FreePages(*pagelist)) {
 						// Found 4 free pages. Can insert into free list.
 
 						if (!isMemoryFull(*pagelist)) {
@@ -53,12 +52,7 @@ void runFIFO(process** prolist, page** pagelist) {
 							print_pages(*pagelist);
 						}
 						missCount++;
-					//} //else {
-						// WAIT for process to finish
-						//print_pagesLL(*pagelist);
-						//printf("\n\n NO FREE FOUR PAGES \n\n");
-						//break;
-					//}
+					} 
 				} else {
 					// Page is already in memory. a hit
 					hitCount++;
@@ -87,7 +81,7 @@ void swapWithOldestPageFIFO(page** pagelist, process* p1, int inMemoryTime, int 
 
 	page* head = *pagelist;
 	page* oldestPage = getOldestPage(*pagelist);
-	page insert;
+	page insert; // The page to insert into the page slot
 	insert.status=1;
 	insert.inMemoryTime = inMemoryTime;
 	insert.process_owner = p1;
@@ -133,8 +127,6 @@ page* getOldestPage(page* pagelist) {
 		}
 		head = head->next;
 	}
-	//printf("\nOLDEST PAGE# %d FROM PROCESS %c\n", oldestPage->pageNumber, oldestPage->process_owner->name[0]);
-
 	return oldestPage;
 }
 
@@ -216,6 +208,9 @@ void removePageFromFreeList(page** pagelist, char nameOne, char nameTwo) {
 	print_pages(*pagelist);
 }
 
+bool find4FreePages(page* llist) {
+	return true;
+}
 
 void print_pages(page* llist) {
 	

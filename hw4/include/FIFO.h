@@ -69,7 +69,9 @@ void removePageFromFreeList(page** pagelist, char nameOne, char nameTwo);
  * @param missCount					count of misses
  * @param numOfProcessesDoneunt		count total processes done
  */
- void printStats(int hitCount, int missCount, int numOfProcessesDone);
+void printStats(int hitCount, int missCount, int numOfProcessesDone);
+
+bool find4FreePages(page* llist);
 
 #endif
 
