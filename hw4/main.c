@@ -31,9 +31,9 @@ int main(){
 
 	//print_ll(llist);
 
-	runFIFO(&llist, &pagelinkedlist);
+	//runFIFO(&llist, &pagelinkedlist);
 	//startLFU(&llist, &pagelinkedlist);
-    //	runRandom(&llist, &pagelinkedlist);
+    	runRandom(&llist, &pagelinkedlist);
 
 	return 0;
 }

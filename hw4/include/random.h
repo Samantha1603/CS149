@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <shared.h>
 #ifndef random
 #define random
 
