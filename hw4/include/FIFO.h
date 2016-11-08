@@ -68,7 +68,7 @@ void removePageFromFreeListFIFO(page** pagelist, char nameOne, char nameTwo);
  * @param hitCount		count of hits
  * @param missCount		count of misses
  */
- void printStatsFIFO(int hitCount, int missCount);
+ void printStatsFIFO(int hitCount, int missCount, int numOfProcessesDone);
 
 #endif
 
