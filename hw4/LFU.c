@@ -15,51 +15,74 @@
 //When page is kicked out, reset that pages frequency to 0.
 
 //this is the function call to start the algorithm. This function uses all functions underneath it
-void startLFU(process** processbyarrivial, page** pagelist)
-{
+void startLFU(process** prolist, page** pagelist) {
+
 	int currentQuanta = 0;
-	int isDone = 0;
 	int hitCount = 0;
 	int missCount = 0;
-	process* process_head = *processbyarrivial;
+	process* process_head = *prolist;
 	page* page_head = *pagelist;
 
-	while(currentQuanta < 600){
-		for(int i =0; i < NUMBER_PROCESS; i++){
-			if( process_head->completion_time > 0 && process_head->arrival_time <= currentQuanta){
+	while (currentQuanta < 600) { // 600 quanta = 1 minute (max)
+
+		for (int i = 0; i < NUMBER_PROCESS; i++) {
+
+
+			if (process_head->completion_time > 0 && process_head->arrival_time <= currentQuanta) { // Only run that process if its completition if > 0
+
 				printf("\nQUANTA: %d\n", currentQuanta);
-				printf("\n\n COMPLETION TIME: %d \n", process_head->completion_time);
+				//printf("COMPLETION TIME: %d \n", process_head->completion_time);
 
-				if(process_head->pagesowned[0].status != NULL){
-					process_head->last_reference = getPageReference(process_head->page_size, process_head->last_reference);
+				if (process_head->pagesowned[0].process_owner != NULL) { // Not first referencing made
+					process_head->last_reference = getPageReference(process_head->page_size, process_head->last_reference); // The next page to reference
 				}
-				if(!isPageAlreadyInMemory(process_head, process_head->last_reference)){ //if page not in memory
-					//Page is not yet in memory. 
-					if(!isMemoryFull(*pagelist)){//if memory is not full and page not in memory
-						addPageToMemory(pagelist, process_head, currentQuanta, process_head->last_reference);//Add page to memory which should also add 1 to frequency for page	
-						page_head = page_head->next;
-						print_pages(*pagelist);
-					}
-					else{//else memory is full and page is not in memory DO SWAP IN THIS ELSE
-							
-						swapWithLowFreqAndHighTimePage();
-						print_pages(*pagelist);
-							} 
-					
-					} missCount++;
-				else{ //this else means, pages is in memory and its a hit
 
-					//page_head->frequency = page_head->frequency + 1;
+				if (!isPageAlreadyInMemory(process_head, process_head->last_reference)) {
+
+					// Page in not yet in memory. Add to free list
+					printf("\nPAGE REFERENCED # %d\n", process_head->last_reference);
+					printf("\n----ENTER - PAGE# %d OF PROCESS %c%c----\n", process_head->last_reference, process_head->name[0], process_head->name[1]);
+
+					//if(find_4FreePages(*pagelist)) {
+						// Found 4 free pages. Can insert into free list.
+
+						if (!isMemoryFull(*pagelist)) {
+							addPageToMemory(pagelist, process_head, currentQuanta, process_head->last_reference);
+							if (page_head != NULL) page_head = page_head->next;
+							print_pages(*pagelist);
+						} else {	
+							// Memory is full. Do swap with oldest page.
+							swapWithLowFreqAndHighTimePage(pagelist, process_head, currentQuanta, process_head->last_reference);
+							print_pages(*pagelist);
+						}
+						missCount++;
+					//} //else {
+						// WAIT for process to finish
+						//print_pagesLL(*pagelist);
+						//printf("\n\n NO FREE FOUR PAGES \n\n");
+
+						//while (!find_4FreePages(*pagelist)) {
+
+						//}
+						//break;
+					//}
+				} else {
+					// Page is already in memory. a hit
 					hitCount++;
-
 				}
 				process_head->completion_time -= 1;
-				
+
+				if (process_head->completion_time <= 0) {
+					//printf("\nCOMPLETION TIME %d\n", process_head->completion_time);
+					printf("\nPROCESS %c%c DONE. REMOVING PAGES\n", process_head->name[0], process_head->name[1]);
+					// Process if finished, removing its free list from free memory
+					removePageFromFreeList(pagelist, process_head->name[0], process_head->name[1]);
+				}
 			}
 			process_head = process_head->next;
-			if(process_head == NULL) process_head = *processbyarrivial;
+			if (process_head == NULL) process_head = *prolist; // wrap around to head process again..
 		}
-		currentQuanta += 1;
+		currentQuanta += 1; // Increment 1 quanta, which is
 	}
 
 	printf("\n\n****************************\n");
@@ -68,6 +91,7 @@ void startLFU(process** processbyarrivial, page** pagelist)
 	printf("      HIT RATIO: %.2f     \n", (float) hitCount / missCount);
 	printf("****************************\n\n\n");
 }
+
 
 page* getLowFreqAndHighTimePage(page* pagelist) //this function returns the page that needs to be taken out of memory.
 {
@@ -92,7 +116,7 @@ page* getLowFreqAndHighTimePage(page* pagelist) //this function returns the page
 	return lowFreqAndHighTime;
 }
 
-void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber, int frequency)
+void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber)
 {
 page* head = *pagelist;
 page* lowestFreqAndHighestTimePage = getLowFreqAndHighTimePage(*pagelist);
@@ -101,7 +125,7 @@ insert.status = 1;
 insert.inMemoryTime = inMemoryTime;
 insert.process_owner = p1;
 insert.pageNumber = pageNumber;
-insert.frequency = frequency;
+insert.frequency = 1;
 
 for(int i = 0; i < NUMBER_PAGES; i++){
 if(head->process_owner->name[0] == lowestFreqAndHighestTimePage->process_owner->name[0] && head->inMemoryTime == lowestFreqAndHighestTimePage->inMemoryTime)
@@ -193,7 +217,7 @@ void removePageFromAProcessArray(process* p1, page* oldestPage) {
 }
 
 
-void removePageFromFreeList(page** pagelist, char pageToRemove) {
+void removePageFromFreeList(page** pagelist, char pageToRemove1, char pageToRemove2) {
 
 	page* head = *pagelist;
 	bool isRemovalExists = false;
@@ -201,7 +225,7 @@ void removePageFromFreeList(page** pagelist, char pageToRemove) {
 	for (int x = 0; x < NUMBER_PAGES; x++) {
 		if (head->process_owner == NULL) break;
 		// Setting the page to be available for other pages to take its spot
-		if (head->process_owner->name[0] == pageToRemove) {
+		if (head->process_owner->name[0] == pageToRemove1 && head->process_owner->name[1] == pageToRemove2) {
 			head->pageNumber = 0;
 			head->status = 0;
 			isRemovalExists = true; // For process name removal
@@ -214,7 +238,7 @@ void removePageFromFreeList(page** pagelist, char pageToRemove) {
 		// Change process name to '.' for all pages referenced to it
 		for (int x = 0; x < NUMBER_PAGES; x++) {
 			if (head->process_owner == NULL) break;
-			if (head->process_owner->name[0] == pageToRemove) head->process_owner->name[0] = '.';
+			if (head->process_owner->name[0] == pageToRemove1 && head->process_owner->name[1] == pageToRemove2) head->process_owner->name[0] = '.';
 			head = head->next;			
 		}
 	}
@@ -271,6 +295,18 @@ void print_pages(page* llist) {
 		head = head->next;
 	}
 	printf("\n\n");
+}
+
+
+void printStats(int hitCount, int missCount) {
+	printf("\n\n****************************\n");
+	printf("         HIT: %d         \n", hitCount);
+	printf("         MISS: %d        \n", missCount);
+	printf("      HIT RATIO: %.2f     \n", (float) hitCount / missCount);
+	printf("      MISS RATIO: %.2f     \n", (1 - (float) hitCount / missCount));
+	printf("****************************\n\n");
+	printf("All processes swapped in.\n\n");
+
 }
 
 
