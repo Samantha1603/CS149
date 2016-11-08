@@ -18,7 +18,7 @@
 void startLFU(process** prolist, page** pagelist) {
 
 	int currentQuanta = 0;
-	int freqArray[31]; //keep track of frequency. page = index + 1; values inside are frequency of each page.
+	int freqArray[32]; //keep track of frequency. page number = index; values inside are frequency of each page.
 	int indexForArray = 0;
 	int hitCount = 0;
 	int missCount = 0;
@@ -56,15 +56,15 @@ void startLFU(process** prolist, page** pagelist) {
 						// Found 4 free pages. Can insert into free list.
 
 						if (!isMemoryFullLFU(*pagelist)) {
-							if(process_head->last_reference > 0)
-								freqArray[process_head->last_reference-1] = freqArray[process_head->last_reference-1] +1;
-							else
-									freqArray[process_head->last_reference] = freqArray[process_head->last_reference] + 1;
+							//if(process_head->last_reference >= 0)
+							//	freqArray[process_head->last_reference-1] = freqArray[process_head->last_reference-1] +1;
+							//else
+							//		freqArray[process_head->last_reference] = freqArray[process_head->last_reference] + 1;
+							freqArray[process_head->last_reference] = freqArray[process_head->last_reference] + 1;
 							addPageToMemory(pagelist, process_head, currentQuanta, process_head->last_reference, );
 							if (page_head != NULL) page_head = page_head->next;
 							print_pagesLFU(*pagelist);
 						} else {	
-							freqArray[process_head->last_reference-1] = freqArray[process_head->last_reference-1] +1;
 							// Memory is full. Do swap with oldest page.
 							swapWithLowFreqAndHighTimePage(pagelist, process_head, currentQuanta, process_head->last_reference, freqArray[process_head->last_reference]);
 							print_pagesLFU(*pagelist);
@@ -115,22 +115,22 @@ page* getLowFreqAndHighTimePage(page* pagelist, *freqArray) //this function retu
 	//page* lowFreqAndHighTime = malloc(sizeof(page));
 	//lowFreqAndHighTime->frequency = head->frequency;
 	int lowestFoundFrequency = freqArray[0]; //frequency value
-	int lowestFoundFrequencyPageNumber = 1; //page Number
-	int 
+	int lowestFoundFrequencyPageNumber = 0; //page Number
+	
 	
 //first find lowest frequency in frequency array
-	for(int i = 0; i < 31; i++)
+	for(int i = 0; i <= 32; i++)
 	{
 		if(freqArray[i] < lowestFoundFrequency){
 			lowestFoundFrequency = freqArray[i];
-			lowestFoundFrequencyPageNumber = i -1;
+			lowestFoundFrequencyPageNumber = i;
 		}
 
 	}
 	//then match the page number with page in pagelist
 	for(int i = 0; i < NUMBER_PAGES; i++)
 	{
-		if(lowestFoundFrequencyPageNumber == head->last_reference){
+		if(lowestFoundFrequencyPageNumber == head->pageNumber){
 			lowFreq = head; //lowfreq is a node with lowest frequency
 		}
 		head = head->next;
