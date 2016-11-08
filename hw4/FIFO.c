@@ -24,6 +24,7 @@ void runFIFO(process** prolist, page** pagelist) {
 	int currentQuanta = 0;
 	int hitCount = 0;
 	int missCount = 0;
+	int numOfProcessesDone = 0;
 	process* process_head = *prolist;
 	page* page_head = *pagelist;
 
@@ -77,6 +78,7 @@ void runFIFO(process** prolist, page** pagelist) {
 					printf("\nPROCESS %c%c DONE. REMOVING PAGES\n", process_head->name[0], process_head->name[1]);
 					// Process if finished, removing its free list from free memory
 					removePageFromFreeListFIFO(pagelist, process_head->name[0], process_head->name[1]);
+					numOfProcessesDone++;
 				}
 			}
 			process_head = process_head->next;
@@ -85,7 +87,7 @@ void runFIFO(process** prolist, page** pagelist) {
 		currentQuanta += 1; // Increment 1 quanta, which is
 	}
 
-	printStatsFIFO(hitCount, missCount);
+	printStatsFIFO(hitCount, missCount, numOfProcessesDone);
 }
 
 
@@ -229,7 +231,7 @@ void print_pagesFIFO(page* llist) {
 	for(int x = 0; x < NUMBER_PAGES; x++){
 		if(head == NULL) break;
 
-		if (head->process_owner->name == NULL || head->process_owner->name[0] == '.') {
+		if (head->process_owner == NULL || head->process_owner->name[0] == '.') {
 			printf("[(#: .),"); // hole
 		} else {						
 			printf("[(#: %d),", head->pageNumber);
@@ -245,13 +247,13 @@ void print_pagesFIFO(page* llist) {
 }
 
 
-void printStatsFIFO(int hitCount, int missCount) {
+void printStatsFIFO(int hitCount, int missCount, int numOfProcessesDone) {
 	printf("\n\n****************************\n");
 	printf("         HIT: %d         \n", hitCount);
 	printf("         MISS: %d        \n", missCount);
-	printf("      HIT RATIO: %.2f     \n", (float) hitCount / missCount);
-	printf("      MISS RATIO: %.2f     \n", (1 - (float) hitCount / missCount));
+	printf("      HIT RATIO: %.2f     \n", (float) hitCount / (hitCount + missCount));
+	printf("      MISS RATIO: %.2f     \n", ((float) missCount / (hitCount + missCount)));
 	printf("****************************\n\n");
-	printf("All processes swapped in.\n\n");
+	printf("NUMBER OF PROCESSES SUCCESSFULLY SWAPPED: %d\n\n", numOfProcessesDone);
 
 }

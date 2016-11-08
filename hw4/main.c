@@ -7,6 +7,7 @@
 #include "FIFO.h"
 #include "LFU.h"
 #include "MFU.h"
+#include "random.h"
 
 /// Amount of memory in MB
 #define MEMORY 100
@@ -42,7 +43,9 @@ int main(){
 	generate_pageList(&pagelinkedlistMFU);
 
 	//print_ll(llist);
-	print_ll(llist);
+	print_ll(llistFIFO);
+	print_ll(llistLFU);
+	print_ll(llistMFU);
 
 	//print_ll(llist);
 	printf("***********************");
