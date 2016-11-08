@@ -1,3 +1,6 @@
+#include <stdbool.h>
+#ifndef MFU
+#define MFU
 
 void startMFU(process** prolist, page** pagelist);
 
@@ -16,3 +19,5 @@ void removePageFromAProcessArrayMFU(process* p1, page* highFreqPage);
 void removePageFromFreeListMFU(page** pagelist, char pageToRemove1, char pageToRemove2);
 
 void printStatsMFU(int hitCount, int missCount, int numOfProcessesDone);
+
+#endif
