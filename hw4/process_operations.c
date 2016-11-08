@@ -6,6 +6,7 @@
 #include "page_operations.h"
 
 void generate_processes(process** list){
+
 	process* b_list;
 	process* head;
 	b_list = malloc(sizeof(process));
@@ -16,9 +17,29 @@ void generate_processes(process** list){
 	//b_list->num_page_in_freelist = 0;
 	head = b_list;//->next?
 	for(int x = 0; x < NUMBER_PROCESS; x++){
-		head->name[0] = 'A' + ( x % 26 );
+		if (x <= 25) {
+			head->name[0] = 'A' + ( x % 26 );
+			head->name[1] = '0';
+		} else if (x <= 51) {
+			head->name[0] = 'a' + ( x % 26 );
+			head->name[1] = '0';
+		} else if (x <= 77) {
+			head->name[0] = 'A' + ( x % 26 );
+			head->name[1] = '1';
+		} else if (x <= 103) {
+			head->name[0] = 'a' + ( x % 26 );
+			head->name[1] = '1';
+		} else if (x <= 129) {
+			head->name[0] = 'A' + ( x % 26 );
+			head->name[1] = '2';
+		} else if (x <= 150) {
+			head->name[0] = 'a' + ( x % 21 );
+			head->name[1] = '2';
+		}
+
 		head->next = malloc(sizeof(process));
-		head->arrival_time = (rand() % TOTAL_TIME) * 10; // Unit of quanta. 1 quata = 100ms
+		//head->arrival_time = (rand() % TOTAL_TIME) * 10;
+		head->arrival_time = (rand() % TOTAL_TIME) * 10;
 		head->page_size = rand() % 4;
 		head->num_page_in_freelist = 0;
 		switch(head->page_size){
@@ -36,56 +57,18 @@ void generate_processes(process** list){
 		head->last_reference = 0;
 		head->completion_time = ((rand() % 5) + 1) * 10; // Unit of quanta. 1 quata = 100ms
 		head->pagesowned = calloc(head->page_size, sizeof(page));
+		for (int i = 0; i < head->page_size; i++) {
+			head->pagesowned[i].pageNumber = -1; // Default. -1 is an impossible page so process starts with known value.
+		}
+
+
 		head = head->next;
 	}
-	head->next = NULL;
 	//free(head); needed?
 	*list = b_list;
 	return;
 }
-
-/*void executeProcesses(process* list, page* list)
-{
-	process* head = list;
-	for(int i = 0; i < NUMBER_PROCESS; i++)
-	{
-		if( process_head->completion_time > 0 && currentQuanta >= Process.arrival_time &&){
-			if(find_4FreePages){
-				startProcess();
-				currentQuanta++;
-			}
-			else{
-				blockAllOtherProcesses();
-				currentQuanta++;
-			}
-		}
-		else{
-			currentQuanta++;
-		}
-	}
-}
-
-//When ever a process finishes, it releases its pages. 
-void whenProcessFinishes()
-{
-//release pages from this passed in process
-}
-
-//if there are not 4 available pages, then block all other processes until a process finishes.
-//Call this function from 4 available pages?
-void blockAllOtherProcesses(process* list)
-{
-	process* head = list;
-	//iterate through processes that have arrival_time <= currentQuanta
-	for(int i = 0; i < NUMBER_PROCESS; i++)
-	{
-		head->blocked = 1;
-		head = head->next;
-		//if(traverse->arrival_time <= currentQuanta){}
-		//currentQuanta++;
-	}
-}*/
-
+/*
 void print_ll(process* list){
 	process* head = list;
 	for(int x = 0; x < NUMBER_PROCESS; x++){
@@ -94,7 +77,16 @@ void print_ll(process* list){
 		head = head->next;
 	}
 }
-
+*/
+void print_ll(process* list){
+	process* head = list;
+	for(int x = 0; x < NUMBER_PROCESS; x++){
+		if(head == NULL) break;
+		printf("Name: %c%c Completion Time: %d Arrival Time: %02d Size: %d\n", head->name[0], head->name[1], 
+			head->completion_time, head->arrival_time, head->page_size);
+		head = head->next;
+	}
+}
 void print_process(process p){
 	printf("\n Arrival Time: %d Completion Time: %d Process Name: %c%c\n", p.arrival_time, p.completion_time, p.name[0], p.name[1]);
 }

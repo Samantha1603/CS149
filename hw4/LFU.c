@@ -37,7 +37,7 @@ void startLFU(process** prolist, page** pagelist) {
 					process_head->last_reference = getPageReference(process_head->page_size, process_head->last_reference); // The next page to reference
 				}
 
-				if (!isPageAlreadyInMemory(process_head, process_head->last_reference)) {
+				if (!isPageAlreadyInMemoryLFU(process_head, process_head->last_reference)) {
 
 					// Page in not yet in memory. Add to free list
 					printf("\nPAGE REFERENCED # %d\n", process_head->last_reference);
@@ -46,14 +46,14 @@ void startLFU(process** prolist, page** pagelist) {
 					//if(find_4FreePages(*pagelist)) {
 						// Found 4 free pages. Can insert into free list.
 
-						if (!isMemoryFull(*pagelist)) {
+						if (!isMemoryFullLFU(*pagelist)) {
 							addPageToMemory(pagelist, process_head, currentQuanta, process_head->last_reference);
 							if (page_head != NULL) page_head = page_head->next;
-							print_pages(*pagelist);
+							print_pagesLFU(*pagelist);
 						} else {	
 							// Memory is full. Do swap with oldest page.
 							swapWithLowFreqAndHighTimePage(pagelist, process_head, currentQuanta, process_head->last_reference);
-							print_pages(*pagelist);
+							print_pagesLFU(*pagelist);
 						}
 						missCount++;
 					//} //else {
@@ -76,7 +76,7 @@ void startLFU(process** prolist, page** pagelist) {
 					//printf("\nCOMPLETION TIME %d\n", process_head->completion_time);
 					printf("\nPROCESS %c%c DONE. REMOVING PAGES\n", process_head->name[0], process_head->name[1]);
 					// Process if finished, removing its free list from free memory
-					removePageFromFreeList(pagelist, process_head->name[0], process_head->name[1]);
+					removePageFromFreeListLFU(pagelist, process_head->name[0], process_head->name[1]);
 				}
 			}
 			process_head = process_head->next;
@@ -116,6 +116,7 @@ page* getLowFreqAndHighTimePage(page* pagelist) //this function returns the page
 	return lowFreqAndHighTime;
 }
 
+//function to take lowestFrequencyAndHighestTime Page from function above and swap it with a new page in memory.
 void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber)
 {
 page* head = *pagelist;
@@ -130,7 +131,7 @@ insert.frequency = 1;
 for(int i = 0; i < NUMBER_PAGES; i++){
 if(head->process_owner->name[0] == lowestFreqAndHighestTimePage->process_owner->name[0] && head->inMemoryTime == lowestFreqAndHighestTimePage->inMemoryTime)
 {
-	removePageFromAProcessArray(head->process_owner, lowestFreqAndHighestTimePage);
+	removePageFromAProcessArrayLFU(head->process_owner, lowestFreqAndHighestTimePage);
 	(*head).status = 1;
 	(*head).inMemoryTime = inMemoryTime;
 	(*head).process_owner = p1;
@@ -202,7 +203,7 @@ page* kickOutLFUPage(page** pagelist, process* p1, int inMemoryTime, int frequen
 
 
 
-void removePageFromAProcessArray(process* p1, page* oldestPage) {
+void removePageFromAProcessArrayLFU(process* p1, page* oldestPage) {
 
 	for(int x = 0; x < p1->page_size; x++) {
 		if(oldestPage->pageNumber == p1->pagesowned[x].pageNumber) {
@@ -217,7 +218,7 @@ void removePageFromAProcessArray(process* p1, page* oldestPage) {
 }
 
 
-void removePageFromFreeList(page** pagelist, char pageToRemove1, char pageToRemove2) {
+void removePageFromFreeListLFU(page** pagelist, char pageToRemove1, char pageToRemove2) {
 
 	page* head = *pagelist;
 	bool isRemovalExists = false;
@@ -243,13 +244,13 @@ void removePageFromFreeList(page** pagelist, char pageToRemove1, char pageToRemo
 		}
 	}
 	printf("AFTER REMOVAL\n");
-	print_pages(*pagelist);
+	print_pagesLFU(*pagelist);
 }
 
 
 
 //check if page is currently in memory
-bool isPageAlreadyInMemory(process* p1, int pageNumber)
+bool isPageAlreadyInMemoryLFU(process* p1, int pageNumber)
 {
 	bool isInMemory = false;
 	for(int x =0; x < p1->num_page_in_freelist; x++)
@@ -260,7 +261,7 @@ bool isPageAlreadyInMemory(process* p1, int pageNumber)
 }
 
 //check if memory is full
-bool isMemoryFull(page* llist)
+bool isMemoryFullLFU(page* llist)
 {
 int pagesFound = 0;
 page* head = llist;
@@ -280,7 +281,7 @@ return isMemFull;
 }
 
 
-void print_pages(page* llist) {
+void print_pagesLFU(page* llist) {
 	
 	page* head = llist;
 	for(int x = 0; x < NUMBER_PAGES; x++){
@@ -298,7 +299,7 @@ void print_pages(page* llist) {
 }
 
 
-void printStats(int hitCount, int missCount) {
+void printStatsLFU(int hitCount, int missCount) {
 	printf("\n\n****************************\n");
 	printf("         HIT: %d         \n", hitCount);
 	printf("         MISS: %d        \n", missCount);
