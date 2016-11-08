@@ -108,34 +108,57 @@ void startLFU(process** prolist, page** pagelist) {
 }
 
 
-page* getLowFreqAndHighTimePage(page* pagelist, ) //this function returns the page that needs to be taken out of memory.
+page* getLowFreqAndHighTimePage(page* pagelist, *freqArray) //this function returns the page that needs to be taken out of memory.
 {
 	page* head = pagelist;
+	page* lowFreq = malloc(sizeof(page));
+	//page* lowFreqAndHighTime = malloc(sizeof(page));
+	//lowFreqAndHighTime->frequency = head->frequency;
+	int lowestFoundFrequency = freqArray[0]; //frequency value
+	int lowestFoundFrequencyPageNumber = 1; //page Number
+	int 
+	
+//first find lowest frequency in frequency array
+	for(int i = 0; i < 31; i++)
+	{
+		if(freqArray[i] < lowestFoundFrequency){
+			lowestFoundFrequency = freqArray[i];
+			lowestFoundFrequencyPageNumber++;
+		}
 
-	page* lowFreqAndHighTime = malloc(sizeof(page));
-	lowFreqAndHighTime->frequency = head->frequency;
+	}
+	//then match the page number with page in pagelist
+	for(int i = 0; i < NUMBER_PAGES; i++)
+	{
+		if(lowestFoundFrequencyPageNumber == head->last_reference){
+			lowFreq = head; //lowfreq is a node with lowest frequency
+		}
+		head = head->next;
 
+	}
+	//now find page that has lowest frequency and highest time
 	for(int i =0; i < NUMBER_PAGES; i++)
 	{
-		if(head->frequency < lowFreqAndHighTime->frequency)
+		//if(head->frequency < lowFreqAndHighTime->frequency)
+		if( head->inMemoryTime < lowFreq->inMemoryTime )
 		{
-			lowFreqAndHighTime = head;
+			lowFreq = head;
 		}
-		else if (head->frequency == lowFreqAndHighTime->frequency){
+		else if (head->frequency == lowestFoundFrequency){
 			if(head->inMemoryTime < lowFreqAndHighTime->inMemoryTime){
 				lowFreqAndHighTime = head;
 			}
 		}
 		head = head->next;
 	}
-	return lowFreqAndHighTime;
+	return lowFreq;
 }
 
 //function to take lowestFrequencyAndHighestTime Page from function above and swap it with a new page in memory.
-void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber, freqArray[process_head->last_reference])
+void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber, *freqArray)
 {
 page* head = *pagelist;
-int lowestFreqAndHighestTimePageNumber = getLowFreqAndHighTimePage(*pagelist, freqArray[process_head->last_reference]);
+page* lowestFreqAndHighestTimePage = getLowFreqAndHighTimePage(*pagelist, *freqArray);
 //page* lowestFreqAndHighestTimePage = getLowFreqAndHighTimePage(*pagelist);
 page insert;
 insert.status = 1;
