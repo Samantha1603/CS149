@@ -32,13 +32,13 @@ page* getOldestPage(page* pagelist);
  * @param pageNumber	the page number
  * @return				true if in memory. false if not
  */
-bool isPageAlreadyInMemory(process* p1, int pageNumber);
+bool isPageAlreadyInMemoryFIFO(process* p1, int pageNumber);
 
 /**
  * Prints the current pages in the free list
  * @param llist		free memory page list
  */
-void print_pages(page* llist);
+void print_pagesFIFO(page* llist);
 
 /**
  * Checks if the free list is full
@@ -46,14 +46,14 @@ void print_pages(page* llist);
  * @return 			true is full. false if not
  */
 
-bool isMemoryFull(page* llist);
+bool isMemoryFullFIFO(page* llist);
 
 /**
  * Remove a page from a process's page array
  * @param p1				the process that holds the free list array 
  * @param oldestPage		the oldest page to be removed
  */
-void removePageFromAProcessArray(process* p1, page* oldestPage);
+void removePageFromAProcessArrayFIFO(process* p1, page* oldestPage);
 
 /**
  * Remove a page from the free memory list when process is finished
@@ -61,17 +61,20 @@ void removePageFromAProcessArray(process* p1, page* oldestPage);
  * @param nameOne		the first char of process name
  * @param nameTwo		the second char of process name
  */
-void removePageFromFreeList(page** pagelist, char nameOne, char nameTwo);
+void removePageFromFreeListFIFO(page** pagelist, char nameOne, char nameTwo);
 
 /**
  * Prints the final statistics of the algorithm
- * @param hitCount					count of hits
- * @param missCount					count of misses
- * @param numOfProcessesDoneunt		count total processes done
+ * @param hitCount		count of hits
+ * @param missCount		count of misses
  */
-void printStats(int hitCount, int missCount, int numOfProcessesDone);
+ void printStatsFIFO(int hitCount, int missCount, int numOfProcessesDone);
 
 bool find4FreePages(page* llist);
 
 #endif
+
+
+
+
 
