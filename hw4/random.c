@@ -1,10 +1,10 @@
 
 
-#include "random.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "random.h"
 #include "shared.h"
 #include "page_operations.h"
 #include "process_operations.h"
