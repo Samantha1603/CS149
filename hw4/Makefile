@@ -1,7 +1,7 @@
 CC=gcc
 HDIR=./include
 CFLAGS=-I$(HDIR)	-std=c99	-g
-makehw4:	main.o	process_operations.o page_operations.o FIFO.o	LFU.o
-	$(CC)	$(CFLAGS)	-o	hw4	main.o process_operations.o page_operations.o FIFO.o	LFU.o
+makehw4:	main.o	process_operations.o page_operations.o FIFO.o	LFU.o	MFU.o
+	$(CC)	$(CFLAGS)	-o	hw4	main.o process_operations.o page_operations.o FIFO.o	LFU.o	MFU.o
 clean:
 	rm *.o hw4 *.stackdump
