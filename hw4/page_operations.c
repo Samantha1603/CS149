@@ -37,24 +37,22 @@ bool find_4FreePages(page* llist){
 	int pagesFound = 0;
 	page* head = llist;
 
-	while(pagesFound < 4)
+	for(int x = 0; x < NUMBER_PAGES; x++) //iterate through linked list of pages to find 4 available pages.
 	{
-		for(int x = 1; x < NUMBER_PAGES; x++) //iterate through linked list of pages to find 4 available pages.
-		{
-	        if(head->status == 0)
-	        {
-	          pagesFound++;
-	          head->status = 1;
-	        }
-	        head = head->next;
-		}
-	}
+	    if(head->status == 0)
+	    {
+	        pagesFound++;
+	    }
+	    head = head->next;
 
-	if(pagesFound == 4){
+	    if (pagesFound >= 4) break; 
+	}
+	
+	if(pagesFound >= 4){
 		return true;
-	}	
-	else{
- 	return false;
+
+	} else {
+ 		return false;
 	}
 }
 
@@ -86,10 +84,10 @@ page* findFreePage(page *list, int length){
 void addPageToMemory(page** list, process* p1, int inMemoryTime, int pageNumber) 
 {
 	// Check if page is already in memory
-	for(int x = 0; x < p1->num_page_in_freelist ; x++){
-		if(p1->pagesowned[x].pageNumber == pageNumber) return;
-	}
-	if(!find_4FreePages) return; // this is where page replacement algorithms should begin
+	//for(int x = 0; x < p1->num_page_in_freelist ; x++){
+	//	if(p1->pagesowned[x].pageNumber == pageNumber) return;
+	//}
+	//if(!find_4FreePages) return; // this is where page replacement algorithms should begin
 	//They should decide what to do with pages once memory fills
 	// End Check
 	page* current;
@@ -103,6 +101,7 @@ void addPageToMemory(page** list, process* p1, int inMemoryTime, int pageNumber)
 	insert.inMemoryTime = inMemoryTime;
 	insert.process_owner = p1;
 	insert.pageNumber = pageNumber;
+	insert.frequency = 1;
 	/*
 	pageToInsert->status = 1; // change status to true when occupied
 	pageToInsert->inMemoryTime = inMemoryTime; // time page added to memory
@@ -115,7 +114,7 @@ void addPageToMemory(page** list, process* p1, int inMemoryTime, int pageNumber)
 			insert.next = current->next;
 			*current = insert;
 			p1->num_page_in_freelist++;
-			return;;
+			return;
 		}
 	}
 	return;
@@ -147,6 +146,8 @@ void print_pagesLL(page* llist) {
 	page* head = llist;
 	for(int x = 0; x < NUMBER_PAGES; x++){
 		if(head == NULL) break;
+
+
 		printf("Status: %d \t Page Number: %d", head->status, head->pageNumber);
 		if(head->status == 1) printf(" Page Owner: %c\n", head->process_owner->name[0]);
 		else printf(" Page Owner: Free\n");

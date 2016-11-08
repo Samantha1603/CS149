@@ -6,19 +6,40 @@
 #include "page_operations.h"
 
 void generate_processes(process** list){
+
 	process* b_list;
 	process* head;
 	b_list = malloc(sizeof(process));
 	b_list->next = malloc(sizeof(process));
-	b_list->name[0] = 'A';
-	b_list->arrival_time = rand() % TOTAL_TIME;
-	b_list->completion_time = (rand() % 5) + 1;
-	b_list->num_page_in_freelist = 0;
+	//b_list->name[0] = 'A';
+	//b_list->arrival_time = rand() % TOTAL_TIME;
+	//b_list->completion_time = (rand() % 5) + 1;
+	//b_list->num_page_in_freelist = 0;
 	head = b_list;//->next?
 	for(int x = 0; x < NUMBER_PROCESS; x++){
-		head->name[0] = 'A' + ( x % 26 );
+		if (x <= 25) {
+			head->name[0] = 'A' + ( x % 26 );
+			head->name[1] = '0';
+		} else if (x <= 51) {
+			head->name[0] = 'a' + ( x % 26 );
+			head->name[1] = '0';
+		} else if (x <= 77) {
+			head->name[0] = 'A' + ( x % 26 );
+			head->name[1] = '1';
+		} else if (x <= 103) {
+			head->name[0] = 'a' + ( x % 26 );
+			head->name[1] = '1';
+		} else if (x <= 129) {
+			head->name[0] = 'A' + ( x % 26 );
+			head->name[1] = '2';
+		} else if (x <= 150) {
+			head->name[0] = 'a' + ( x % 21 );
+			head->name[1] = '2';
+		}
+
 		head->next = malloc(sizeof(process));
-		head->arrival_time = rand() % TOTAL_TIME;
+		//head->arrival_time = (rand() % TOTAL_TIME) * 10;
+		head->arrival_time = (rand() % TOTAL_TIME) * 10;
 		head->page_size = rand() % 4;
 		head->num_page_in_freelist = 0;
 		switch(head->page_size){
@@ -33,17 +54,21 @@ void generate_processes(process** list){
 			default: head->page_size = 5;
 					break;
 		}
-		head->last_reference = getPageReference(head->page_size, 0);
-		head->completion_time = (rand() % 5) + 1;
+		head->last_reference = 0;
+		head->completion_time = ((rand() % 5) + 1) * 10; // Unit of quanta. 1 quata = 100ms
 		head->pagesowned = calloc(head->page_size, sizeof(page));
+		for (int i = 0; i < head->page_size; i++) {
+			head->pagesowned[i].pageNumber = -1; // Default. -1 is an impossible page so process starts with known value.
+		}
+
+
 		head = head->next;
 	}
-	head->next = NULL;
 	//free(head); needed?
 	*list = b_list;
 	return;
 }
-
+/*
 void print_ll(process* list){
 	process* head = list;
 	for(int x = 0; x < NUMBER_PROCESS; x++){
@@ -52,7 +77,16 @@ void print_ll(process* list){
 		head = head->next;
 	}
 }
-
+*/
+void print_ll(process* list){
+	process* head = list;
+	for(int x = 0; x < NUMBER_PROCESS; x++){
+		if(head == NULL) break;
+		printf("Name: %c%c Completion Time: %d Arrival Time: %02d Size: %d\n", head->name[0], head->name[1], 
+			head->completion_time, head->arrival_time, head->page_size);
+		head = head->next;
+	}
+}
 void print_process(process p){
 	printf("\n Arrival Time: %d Completion Time: %d Process Name: %c%c\n", p.arrival_time, p.completion_time, p.name[0], p.name[1]);
 }
