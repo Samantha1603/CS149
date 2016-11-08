@@ -260,7 +260,7 @@ void print_pagesLFU(page* llist) {
 	for(int x = 0; x < NUMBER_PAGES; x++){
 		if(head == NULL) break;
 
-		if (head->process_owner->name == NULL || head->process_owner->name[0] == '.') {
+		if (head->process_owner == NULL || head->process_owner->name[0] == '.') {
 			printf("[(#: .),"); // hole
 		} else {						
 			printf("[(#: %d),", head->pageNumber);
