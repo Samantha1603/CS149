@@ -7,16 +7,16 @@ void startLFU(process** prolist, page** pagelist);
 
 page* getLowFreqAndHighTimePage(page* pagelist);
 
-bool isPageAlreadyInMemory(process* p1, int pageNumber);
+bool isPageAlreadyInMemoryLFU(process* p1, int pageNumber);
 
-bool isMemoryFull(page* llist);
+bool isMemoryFullLFU(page* llist);
 
-void print_pages(page* llist);
+void print_pagesLFU(page* llist);
 
 void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber);
 
-void removePageFromAProcessArray(process* p1, page* oldestPage);
+void removePageFromAProcessArrayLFU(process* p1, page* oldestPage);
 
-void removePageFromFreeList(page** pagelist, char pageToRemove1, char pageToRemove2);
+void removePageFromFreeListLFU(page** pagelist, char pageToRemove1, char pageToRemove2);
 
 #endif
