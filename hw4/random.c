@@ -1,11 +1,10 @@
-#include "random.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include "shared.h"
 #include "page_operations.h"
 #include "process_operations.h"
+#include "random.h"
 
 /*
  * When memory is full FIFO algorithm assigns the spot of the oldest page to the

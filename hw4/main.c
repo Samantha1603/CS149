@@ -7,6 +7,7 @@
 #include "FIFO.h"
 #include "LFU.h"
 #include "MFU.h"
+#include "LRU.h"
 #include "random.h"
 
 /// Amount of memory in MB
@@ -15,51 +16,79 @@
 ///Page size in MB
 #define PAGE_SIZE 1
 
-int main(){
+int main() {
 	
 	srand(time(NULL));
-	// Generate Processes
+
+	process* llist;
+	generate_processes(&llist);
+	sort_pll(&llist);
+	print_ll(llist);
+
+	
 	process* llistFIFO;
 	generate_processes(&llistFIFO);
-	//sort_pll(&llist);
-
+	printf("\n\n\nUnsorted\n\n\n");
+	print_ll(llistFIFO);
 	page* pagelinkedlistFIFO;
 	generate_pageList(&pagelinkedlistFIFO);
-
-
-	process* llistLFU;
-	generate_processes(&llistLFU);
-	//sort_pll(&llist);
-
-	page* pagelinkedlistLFU;
-	generate_pageList(&pagelinkedlistLFU);
-
-
-	process* llistMFU;
-	generate_processes(&llistMFU);
-	//sort_pll(&llist);
-
-	page* pagelinkedlistMFU;
-	generate_pageList(&pagelinkedlistMFU);
-
-	//print_ll(llist);
-	print_ll(llistFIFO);
-	print_ll(llistLFU);
-	print_ll(llistMFU);
-
-	//print_ll(llist);
 	printf("***********************");
 	printf("\n\nHERE IS FIFO ALGORITHM\n\n" );
 	printf("***********************");
 	runFIFO(&llistFIFO, &pagelinkedlistFIFO);
+	
+
+	/*
+	process* llistLFU;
+	generate_processes(&llistLFU);
+	printf("\n\n\nUnsorted\n\n\n");
+	print_ll(llistLFU);
+	page* pagelinkedlistLFU;
+	generate_pageList(&pagelinkedlistLFU);
 	printf("\n***********************\n");
 	printf("\n\nHERE IS LFU ALGORITHM\n\n" );
 	printf("***********************");
 	startLFU(&llistLFU, &pagelinkedlistLFU);
-		printf("\n***********************\n");
+	*/
+
+	/*
+	process* llistMFU;
+	generate_processes(&llistMFU);
+	printf("\n\n\nUnsorted\n\n\n");
+	print_ll(llistMFU);
+	page* pagelinkedlistMFU;
+	generate_pageList(&pagelinkedlistMFU);
+	printf("\n***********************\n");
 	printf("\n\nHERE IS MFU ALGORITHM\n\n" );
 	printf("***********************");
 	startMFU(&llistMFU, &pagelinkedlistMFU);
+	*/
+
+	/*
+	process* llistLRU;
+	generate_processes(&llistLRU);
+	printf("\n\n\nUnsorted\n\n\n");
+	print_ll(llistLRU);
+	page* pagelinkedlistLRU;
+	generate_pageList(&pagelinkedlistLRU);
+	printf("\n***********************\n");
+	printf("\n\nHERE IS LRU ALGORITHM\n\n" );
+	printf("***********************");
+	runLRU(&llistLRU, &pagelinkedlistLRU);
+	*/
+
+	/*
+	process* llistRANDOM;
+	generate_processes(&llistRANDOM);
+	printf("\n\n\nUnsorted\n\n\n");
+	print_ll(llistRANDOM);
+	page* pagelinkedlistRANDOM;
+	generate_pageList(&pagelinkedlistRANDOM);
+	printf("\n***********************\n");
+	printf("\n\nHERE IS RANDOM ALGORITHM\n\n" );
+	printf("***********************");
+	runRandom(&llistRANDOM, &pagelinkedlistRANDOM);
+	*/
 
 	return 0;
 }
