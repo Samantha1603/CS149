@@ -18,10 +18,19 @@
 void startLFU(process** prolist, page** pagelist) {
 
 	int currentQuanta = 0;
+	int freqArray[31]; //keep track of frequency. page = index + 1; values inside are frequency of each page.
+	int indexForArray = 0;
 	int hitCount = 0;
 	int missCount = 0;
+	int numOfProcessesDone = 0;
 	process* process_head = *prolist;
 	page* page_head = *pagelist;
+
+	for(int i = 0; i < 31; i++)
+	{
+		freqArray[i] = 0;
+	}
+
 
 	while (currentQuanta < 600) { // 600 quanta = 1 minute (max)
 
@@ -47,12 +56,17 @@ void startLFU(process** prolist, page** pagelist) {
 						// Found 4 free pages. Can insert into free list.
 
 						if (!isMemoryFullLFU(*pagelist)) {
-							addPageToMemory(pagelist, process_head, currentQuanta, process_head->last_reference);
+							if(process_head->last_reference > 0)
+								freqArray[process_head->last_reference-1] = freqArray[process_head->last_reference-1] +1;
+							else
+									freqArray[process_head->last_reference] = freqArray[process_head->last_reference] + 1;
+							addPageToMemory(pagelist, process_head, currentQuanta, process_head->last_reference, );
 							if (page_head != NULL) page_head = page_head->next;
 							print_pagesLFU(*pagelist);
 						} else {	
+							freqArray[process_head->last_reference-1] = freqArray[process_head->last_reference-1] +1;
 							// Memory is full. Do swap with oldest page.
-							swapWithLowFreqAndHighTimePage(pagelist, process_head, currentQuanta, process_head->last_reference);
+							swapWithLowFreqAndHighTimePage(pagelist, process_head, currentQuanta, process_head->last_reference, freqArray[process_head->last_reference]);
 							print_pagesLFU(*pagelist);
 						}
 						missCount++;
@@ -77,6 +91,7 @@ void startLFU(process** prolist, page** pagelist) {
 					printf("\nPROCESS %c%c DONE. REMOVING PAGES\n", process_head->name[0], process_head->name[1]);
 					// Process if finished, removing its free list from free memory
 					removePageFromFreeListLFU(pagelist, process_head->name[0], process_head->name[1]);
+					numOfProcessesDone++;
 				}
 			}
 			process_head = process_head->next;
@@ -93,7 +108,7 @@ void startLFU(process** prolist, page** pagelist) {
 }
 
 
-page* getLowFreqAndHighTimePage(page* pagelist) //this function returns the page that needs to be taken out of memory.
+page* getLowFreqAndHighTimePage(page* pagelist, ) //this function returns the page that needs to be taken out of memory.
 {
 	page* head = pagelist;
 
@@ -117,10 +132,11 @@ page* getLowFreqAndHighTimePage(page* pagelist) //this function returns the page
 }
 
 //function to take lowestFrequencyAndHighestTime Page from function above and swap it with a new page in memory.
-void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber)
+void swapWithLowFreqAndHighTimePage(page** pagelist, process* p1, int inMemoryTime, int pageNumber, freqArray[process_head->last_reference])
 {
 page* head = *pagelist;
-page* lowestFreqAndHighestTimePage = getLowFreqAndHighTimePage(*pagelist);
+int lowestFreqAndHighestTimePageNumber = getLowFreqAndHighTimePage(*pagelist, freqArray[process_head->last_reference]);
+//page* lowestFreqAndHighestTimePage = getLowFreqAndHighTimePage(*pagelist);
 page insert;
 insert.status = 1;
 insert.inMemoryTime = inMemoryTime;
@@ -299,14 +315,14 @@ void print_pagesLFU(page* llist) {
 }
 
 
-void printStatsLFU(int hitCount, int missCount) {
+void printStatsLFU(int hitCount, int missCount, int numOfProcessesDone) {
 	printf("\n\n****************************\n");
 	printf("         HIT: %d         \n", hitCount);
 	printf("         MISS: %d        \n", missCount);
-	printf("      HIT RATIO: %.2f     \n", (float) hitCount / missCount);
-	printf("      MISS RATIO: %.2f     \n", (1 - (float) hitCount / missCount));
+	printf("      HIT RATIO: %.2f     \n", (float) hitCount / (hitCount + missCount));
+	printf("      MISS RATIO: %.2f     \n", ((float) missCount / (hitCount + missCount)));
 	printf("****************************\n\n");
-	printf("All processes swapped in.\n\n");
+	printf("NUMBER OF PROCESSES SUCCESSFULLY SWAPPED: %d\n\n", numOfProcessesDone);
 
 }
 
