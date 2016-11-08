@@ -44,6 +44,48 @@ void generate_processes(process** list){
 	return;
 }
 
+void executeProcesses(process* list, page* list)
+{
+	process* head = list;
+	for(int i = 0; i < NUMBER_PROCESS; i++)
+	{
+		if( process_head->completion_time > 0 && currentQuanta >= Process.arrival_time &&){
+			if(find_4FreePages){
+				startProcess();
+				currentQuanta++;
+			}
+			else{
+				blockAllOtherProcesses();
+				currentQuanta++;
+			}
+		}
+		else{
+			currentQuanta++;
+		}
+	}
+}
+
+//When ever a process finishes, it releases its pages. 
+void whenProcessFinishes()
+{
+//release pages from this passed in process
+}
+
+//if there are not 4 available pages, then block all other processes until a process finishes.
+//Call this function from 4 available pages?
+void blockAllOtherProcesses(process* list)
+{
+	process* head = list;
+	//iterate through processes that have arrival_time <= currentQuanta
+	for(int i = 0; i < NUMBER_PROCESS; i++)
+	{
+		head->blocked = 1;
+		head = head->next;
+		//if(traverse->arrival_time <= currentQuanta){}
+		//currentQuanta++;
+	}
+}
+
 void print_ll(process* list){
 	process* head = list;
 	for(int x = 0; x < NUMBER_PROCESS; x++){
